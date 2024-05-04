@@ -1322,6 +1322,7 @@ function submitBet(){
     if (playerMoney < 10)  {
         alert("SORRY, YOU ARE OUT OF CASH. I'll loan you a $1000");
         playerMoney += 1000;
+        updatePlayerMoney();
         return
     }
 
