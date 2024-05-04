@@ -40,6 +40,12 @@ let doubleDownBut = document.getElementById('doubleDown');
 
 let submitBetBut = document.getElementById('submitBet');
 
+//make urls to access img and sound files
+
+let herokuUrl = 'https://game-site-backend-8b940b050080.herokuapp.com/';
+
+let urlAssets = herokuUrl + "assets/"
+
 
 
 
@@ -276,7 +282,7 @@ function checkIfPlayerBust(){
      
        
         
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
 
         dealerHasPlayed = true;
 
@@ -337,7 +343,7 @@ function comparePlayerAndDealerScores(player,dealer){
            
             
         displayWinner.innerHTML = "YOU WIN!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" +  dealerArr[1][2];
+        document.getElementById("dealerCard2").src = urlAssets +  dealerArr[1][2];
         playerMoney += playerBet;
         playerBet = 0;
         //render();
@@ -347,7 +353,7 @@ function comparePlayerAndDealerScores(player,dealer){
         else if (playerScore === dealerScore){
 
         displayWinner.innerHTML = "TIE!";
-        document.getElementById("dealerCard2").src ="http://localhost:5500/assets/" +  dealerArr[1][2]
+        document.getElementById("dealerCard2").src =urlAssets +  dealerArr[1][2]
        
         playerBet = 0;
         //render();
@@ -355,7 +361,7 @@ function comparePlayerAndDealerScores(player,dealer){
 
         }
         else displayWinner.innerHTML = "YOU LOSE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney -= playerBet;
         playerBet = 0;
         //render();
@@ -365,7 +371,7 @@ function comparePlayerAndDealerScores(player,dealer){
     if (playerScore <=21 && dealerScore > 21){
 
         displayWinner.innerHTML = "YOU WIN!"
-        document.getElementById("dealerCard2").src ="http://localhost:5500/assets/" +  dealerArr[1][2]
+        document.getElementById("dealerCard2").src =urlAssets +  dealerArr[1][2]
         playerMoney += playerBet;
         playerBet = 0;
         //render();
@@ -431,7 +437,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
            
             
         displayWinner.innerHTML = "YOU WIN!"
-        document.getElementById("dealerCard2").src = "http://http://localhost:5500/assets/" + dealerArr[1][2];
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2];
         playerMoney += playerBet * splitFactor;
         //alert(`playerBet ${playerBet}`)
         //alert(`playerMoney ${playerMoney}`)
@@ -443,7 +449,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
         else if (playerScore1 === dealerScore){
 
         displayWinner.innerHTML = "TIE!";
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
        
         //playerBet = 0;
         //render();
@@ -451,7 +457,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
 
         }
         else { displayWinner.innerHTML = "YOU LOSE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney -= playerBet * splitFactor;
 
         //alert(`playerBet ${playerBet}`)
@@ -464,7 +470,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
     if (playerScore1 <=21 && dealerScore > 21){
 
         displayWinner.innerHTML = "YOU WIN!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney += playerBet * splitFactor;
 
         //alert(`playerBet ${playerBet}`)
@@ -477,7 +483,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
 
     if (playerScore1 > 21 && dealerScore <=21){
         displayWinner.innerHTML = "YOU LOSE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney -= playerBet * splitFactor;
 
         //alert(`playerBet ${playerBet}`)
@@ -485,7 +491,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
     }
     if (playerScore1 > 21 && dealerScore > 21){
         displayWinner.innerHTML = "TIE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
        
     }
 
@@ -496,7 +502,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
            
             
         displayWinner.innerHTML = "YOU WIN!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2];
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2];
         playerMoney += playerBet * splitFactor;
 
        
@@ -506,13 +512,13 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
         else if (playerScore2 === dealerScore){
 
         displayWinner.innerHTML = "TIE!";
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
     
         
 
         }
         else { displayWinner.innerHTML = "YOU LOSE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney -= playerBet * splitFactor;
 
       
@@ -522,7 +528,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
     if (playerScore2 <=21 && dealerScore > 21){
 
         displayWinner.innerHTML = "YOU WIN!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney += playerBet * splitFactor;
 
      
@@ -530,7 +536,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
         
     if (playerScore2 > 21 && dealerScore <=21){
         displayWinner.innerHTML = "YOU LOSE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney -= playerBet * splitFactor;
 
    
@@ -538,7 +544,7 @@ function comparePlayerAndDealerScoresSplit(player1,player2,player3,player4,playe
 
     if (playerScore2 > 21 && dealerScore > 21){
         displayWinner.innerHTML = "TIE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
   
     }
 
@@ -553,7 +559,7 @@ if (splitCounter >= 2){
            
             
         displayWinner.innerHTML = "YOU WIN!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2];
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2];
         playerMoney += playerBet * splitFactor;
 
  
@@ -563,13 +569,13 @@ if (splitCounter >= 2){
         else if (playerScore3 === dealerScore){
 
         displayWinner.innerHTML = "TIE!";
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
        
    
 
         }
         else { displayWinner.innerHTML = "YOU LOSE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney -= playerBet * splitFactor;
 
        
@@ -579,7 +585,7 @@ if (splitCounter >= 2){
     if (playerScore3 <=21 && dealerScore > 21){
 
         displayWinner.innerHTML = "YOU WIN!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney += playerBet * splitFactor;
 
         
@@ -587,14 +593,14 @@ if (splitCounter >= 2){
         
     if (playerScore3 > 21 && dealerScore <=21){
         displayWinner.innerHTML = "YOU LOSE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
         playerMoney -= playerBet * splitFactor;
 
     }
 
     if (playerScore3 > 21 && dealerScore > 21){
         displayWinner.innerHTML = "TIE!"
-        document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+        document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
        
     }
    
@@ -608,7 +614,7 @@ if (playerScore4 <= 21 && dealerScore <=21){
        
         
     displayWinner.innerHTML = "YOU WIN!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2];
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2];
     playerMoney += playerBet * splitFactor;
   
    
@@ -617,14 +623,14 @@ if (playerScore4 <= 21 && dealerScore <=21){
     else if (playerScore4 === dealerScore){
 
     displayWinner.innerHTML = "TIE!";
-    document.getElementById("dealerCard2").src ="http://localhost:5500/assets/" +  dealerArr[1][2]
+    document.getElementById("dealerCard2").src =urlAssets +  dealerArr[1][2]
    
    
     
 
     }
     else { displayWinner.innerHTML = "YOU LOSE!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
     playerMoney -= playerBet * splitFactor;
 
 }
@@ -633,21 +639,21 @@ if (playerScore4 <= 21 && dealerScore <=21){
 if (playerScore4 <=21 && dealerScore > 21){
 
     displayWinner.innerHTML = "YOU WIN!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
     playerMoney += playerBet * splitFactor;
  
 }
     
 if (playerScore4 > 21 && dealerScore <=21){
     displayWinner.innerHTML = "YOU LOSE!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
     playerMoney -= playerBet * splitFactor;
  
 }
 
 if (playerScore4 > 21 && dealerScore > 21){
     displayWinner.innerHTML = "TIE!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
  
 }
 
@@ -661,7 +667,7 @@ if (playerScore5 <= 21 && dealerScore <=21){
        
         
     displayWinner.innerHTML = "YOU WIN!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2];
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2];
     playerMoney += playerBet * splitFactor;
    
  
@@ -669,13 +675,13 @@ if (playerScore5 <= 21 && dealerScore <=21){
     else if (playerScore5 === dealerScore){
 
     displayWinner.innerHTML = "TIE!";
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
    
     
 
     }
     else { displayWinner.innerHTML = "YOU LOSE!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
     playerMoney -= playerBet * splitFactor;
  
 }
@@ -684,21 +690,21 @@ if (playerScore5 <= 21 && dealerScore <=21){
 if (playerScore5 <=21 && dealerScore > 21){
 
     displayWinner.innerHTML = "YOU WIN!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
     playerMoney += playerBet * splitFactor;
   
 }
     
 if (playerScore5 > 21 && dealerScore <=21){
     displayWinner.innerHTML = "YOU LOSE!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
     playerMoney -= playerBet * splitFactor;
 
 }
 
 if (playerScore5 > 21 && dealerScore > 21){
     displayWinner.innerHTML = "TIE!"
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2]
+    document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2]
 
 }
 
@@ -873,7 +879,7 @@ function insurance(){
         let sideBet = playerBet * 0.5;
         if (dealerArr[1][0] === "K" || dealerArr[1][0] === "Q" || dealerArr[1][0] === "J" || dealerArr[1][0] === 10){
             playerMoney += sideBet * 2;
-            document.getElementById("dealerCard2").src = "http://localhost:5500/assets/" + dealerArr[1][2];
+            document.getElementById("dealerCard2").src = urlAssets + dealerArr[1][2];
             updatePlayerMoney();
           
            
@@ -1095,7 +1101,7 @@ deckLength.innerHTML = deck.length;
 for (let i = 1; i < playerArr.length + 1; i++){
     let numVar = i.toString();
     let idName = "playerCard" + numVar;
-    document.getElementById(idName).src = "http://localhost:5500/assets/" + playerArr[i -1][2]
+    document.getElementById(idName).src = urlAssets + playerArr[i -1][2]
 }
 
 //blank out old player card images after rendering current ones
@@ -1112,8 +1118,8 @@ for (let i = 8; i > playerArr.length; i--){
 //insert conditional to hide dealer's second card
 
 if (dealerArr.length === 2){
-    document.getElementById("dealerCard1").src =  "http://localhost:5500/assets/" + dealerArr[0][2];
-    document.getElementById("dealerCard2").src = "http://localhost:5500/assets/BackgroundBlack.png";
+    document.getElementById("dealerCard1").src =  urlAssets + dealerArr[0][2];
+    document.getElementById("dealerCard2").src = urlAssets + "BackgroundBlack.png";
 
 }
 
@@ -1122,7 +1128,7 @@ else if (dealerArr.length > 2){
 for (let i = 1; i < dealerArr.length + 1; i++){
     let numVar = i.toString();
     let idName = "dealerCard" + numVar;
-    document.getElementById(idName).src = "http://localhost:5500/assets/" + dealerArr[i -1][2]
+    document.getElementById(idName).src = urlAssets + dealerArr[i -1][2]
 }
 }
 
