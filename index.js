@@ -27,6 +27,11 @@ app.get("/api/test", (req, res) => {
 
 });
 
+app.get("/api/newTest", (req, res) => {
+  res.json("changes are working!");
+
+});
+
 
 
 //render images to client
