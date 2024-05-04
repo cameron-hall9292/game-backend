@@ -1285,10 +1285,22 @@ function revealButton(button){
 
 }
 
+//create function to check if player out of cash
+
+function checkIfGameOver(){
+    if (playerCash > 0) return
+    else {
+        alert("SORRY, YOU ARE OUT OF CASH. GAMEOVER");
+        location.reload();
+    }
+}
+
 
 //hideButton(bet10But);
 
 function submitBet(){
+
+    checkIfGameOver();
 
     if (playerBet === 0){
         alert("YOU MUST PLACE A BET!")
