@@ -836,7 +836,7 @@ function createAndReshuffleDeck(deck){
 
 function bet10(){
 
-    if (playerMoney < 10 || playerMoney < playerBet) {
+    if (playerMoney < 10 || playerMoney <= playerBet) {
         alert("SORRY, INSUFFICIENT FUNDS");
         return
     }
@@ -853,7 +853,7 @@ playersBet.innerHTML = playerBet;
 
 function bet100(){
 
-    if (playerMoney < 100 || playerMoney < playerBet) {
+    if (playerMoney < 100 || playerMoney <= playerBet) {
         alert("SORRY, INSUFFICIENT FUNDS");
         return
     }
@@ -869,7 +869,7 @@ playersBet.innerHTML = playerBet;
 
 function bet1000(){
 
-    if (playerMoney < 1000 || playerMoney < playerBet) {
+    if (playerMoney < 1000 || playerMoney <= playerBet) {
         alert("SORRY, INSUFFICIENT FUNDS");
         return
     }
