@@ -129,30 +129,40 @@ let buildingCollisionCounter = 0;
 
 let level = 1;
 
-//create variables for sound effects
 
-// let bombExplosion = new Audio('fire 6.mp3');
-
-// let allyExplodeSound = new Audio('fire 6.mp3');
-
-let bombExplosion = new Audio('http://localhost:5500/redDotsounds/boom1.wav');
-
-
-let allyExplodeSound = new Audio('http://localhost:5500/redDotsounds/boom1.wav');
-
-//let gameOverSound = new Audio('Game Over.mp3');
-
-let gameOverSound = new Audio('http://localhost:5500/redDotsounds/boom5.wav');
-
-let titleSong = new Audio('http://localhost:5500/redDotsounds/titleSong.mp3');
+//title screen heading
 
 let startScreenText = 'THE RED DOT';
 
-let boomOne = new Audio('http://localhost:5500/redDotsounds/boom3.wav');
 
-let robot = new Audio('http://localhost:5500/redDotsounds/robot.wav');
 
-let buildingDown = new Audio('http://localhost:5500/redDotsounds/boom5.wav');
+//urls to access sound variables
+
+let localUrl = 'http://localhost:5500/';
+
+let herokuUrl = 'https://game-site-backend-8b940b050080.herokuapp.com/';
+
+let soundFolder = "redDotsounds/";
+
+let soundUrl = herokuUrl + soundFolder;
+
+//sound variables
+
+let bombExplosion = new Audio(soundUrl + 'boom1.wav');
+
+let allyExplodeSound = new Audio(soundUrl + 'boom1.wav');
+
+//let gameOverSound = new Audio('Game Over.mp3');
+
+let gameOverSound = new Audio(soundUrl + 'boom5.wav');
+
+let titleSong = new Audio(soundUrl + 'titleSong.mp3');
+
+let boomOne = new Audio(soundUrl + 'boom3.wav');
+
+let robot = new Audio(soundUrl + 'robot.wav');
+
+let buildingDown = new Audio(soundUrl + 'boom5.wav');
 
 
 
