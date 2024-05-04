@@ -3,6 +3,8 @@
 
 let playerArr;
 let dealerArr;
+let playerMoney = 5000;
+let playerBet = 0;
 
 let splitHand1 = [];
 let splitHand2 = [];
@@ -831,9 +833,6 @@ function createAndReshuffleDeck(deck){
 
 //create function to allow players to bet
 
-let playerMoney = 5000;
-
-let playerBet = 0;
 
 function bet10(){
 
@@ -1288,7 +1287,7 @@ function revealButton(button){
 //create function to check if player out of cash
 
 function checkIfGameOver(){
-    if (playerCash > 0) return
+    if (playerMoney > 0) return
     else {
         alert("SORRY, YOU ARE OUT OF CASH. GAMEOVER");
         location.reload();
