@@ -51,6 +51,9 @@ app.get("/api/:image", (req, res) => {
 
 
 
+
+
+
 app.get("/pong", (req, res) => {
   res.sendFile(__dirname + "/games/Pong_Clone.html");
 });
