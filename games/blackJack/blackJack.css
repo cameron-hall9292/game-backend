@@ -43,7 +43,7 @@ body{
    
         position: relative;
    
-        background-color:#35654d;
+        background-color:white;
 
         background-size: cover; 
         background-position: center; 
@@ -64,6 +64,7 @@ body{
 
   .button:hover{
     color: red;
+    background-color: #35654d;
   }
 
 
