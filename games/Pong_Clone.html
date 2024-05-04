@@ -105,23 +105,27 @@ let gameStatus = true;
 
 //create sound variables
 
-let hit = new Audio('http://localhost:5500/pongsounds/Pop.OGG');
+let localUrl = "http://localhost:5500/";
 
-//"http://localhost:5500/pongsounds/Pop.OGG"
+let herokuUrl = "https://game-site-backend-8b940b050080.herokuapp.com/";
 
-let score = new Audio('http://localhost:5500/pongsounds/Score.OGG');
+let hit = new Audio(herokuUrl + "pongsounds/Pop.OGG");
 
-let muffexplosion = new Audio('http://localhost:5500/pongsounds/muffled_explosion.WAV');
 
-let fuse = new Audio('http://localhost:5500/pongsounds/fuse.OGG');
 
-let bigExplosion = new Audio('http://localhost:5500/pongsounds/synthetic_explosion_1.FLAC');
+let score = new Audio(herokuUrl + "pongsounds/Score.OGG");
 
-let peeep = new Audio('http://localhost:5500/pongsounds/peeep.OGG');
+let muffexplosion = new Audio(herokuUrl + 'pongsounds/muffled_explosion.WAV');
 
-let peep = new Audio('http://localhost:5500/pongsounds/peep.OGG');
+let fuse = new Audio(herokuUrl + 'pongsounds/fuse.OGG');
 
-let plop = new Audio('http://localhost:5500/pongsounds/plop.OGG');
+let bigExplosion = new Audio(herokuUrl + 'pongsounds/synthetic_explosion_1.FLAC');
+
+let peeep = new Audio(herokuUrl + 'pongsounds/peeep.OGG');
+
+let peep = new Audio(herokuUrl + 'pongsounds/peep.OGG');
+
+let plop = new Audio(herokuUrl + 'pongsounds/plop.OGG');
 
 
 let count = 0;
