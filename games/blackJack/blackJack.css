@@ -1,0 +1,159 @@
+
+
+
+
+
+body{
+	background-color:#35654d ;
+	margin:auto;
+    width:95%;
+
+    color:white;
+    font-family: 'Crete Round';
+
+
+}
+
+.main{
+    margin:auto;
+    width:95%;
+   
+}
+
+.dealerCards{
+    margin:auto;
+    width:95%;
+  
+}
+
+.playerCards{
+    margin:auto;
+    width:95%;
+
+}
+
+
+.buttons{
+    margin:auto;
+    width:95%;
+  
+}
+
+.button {
+   
+        position: relative;
+   
+        background-color:#35654d;
+
+        background-image: url('http://localhost:5500/assets/chipPurple.png'); 
+        background-size: cover; 
+        background-position: center; 
+        color: BLACK;
+        border:none; 
+        /* border-radius:10px;  */
+        padding:10px;
+        min-height:10px; 
+        min-width: 10px;
+        margin: 20px;
+        /* box-shadow: 0px 0px 2px 2px rgb(0,0,0); */
+        width: 100px;
+        height: 100px;
+        font-family: 'Crete Round'
+    
+  }
+
+  #bet10 {
+   
+    position: relative;
+
+    background-color:#35654d;
+
+    background-image: url('http://localhost:5500/assets/chipOrange.png'); 
+    background-size: cover; 
+    background-position: center; 
+    color: white;
+    border:none; 
+    /* border-radius:10px;  */
+    padding:10px;
+    min-height:10px; 
+    min-width: 10px;
+    margin: 20px;
+    /* box-shadow: 0px 0px 2px 2px rgb(0,0,0); */
+    width: 100px;
+    height: 100px
+
+}
+
+
+#bet100 {
+   
+    position: relative;
+
+    background-color:#35654d;
+
+    background-image: url('http://localhost:5500/assets/chipBlack.png'); 
+    background-size: cover; 
+    background-position: center; 
+    color: white;
+    border:none; 
+    /* border-radius:10px;  */
+    padding:10px;
+    min-height:10px; 
+    min-width: 10px;
+    margin: 20px;
+    /* box-shadow: 0px 0px 2px 2px rgb(0,0,0); */
+    width: 100px;
+    height: 100px
+
+}
+
+
+#bet1000 {
+   
+    position: relative;
+
+    background-color:#35654d;
+
+    background-image: url('http://localhost:5500/assets/chipYellow.png'); 
+    background-size: cover; 
+    background-position: center; 
+    color: black;
+    border:none; 
+    /* border-radius:10px;  */
+    padding:10px;
+    min-height:10px; 
+    min-width: 10px;
+    margin: 20px;
+    /* box-shadow: 0px 0px 2px 2px rgb(0,0,0); */
+    width: 100px;
+    height: 100px
+
+}
+
+.data{
+    font-family: 'Crete Round';
+    font-size: 25px;
+    
+}
+
+#betLabel{
+    margin-left:250px;
+}
+
+#dealerScore{
+    margin-left: 100px;
+    font-size: 25px;
+}
+
+
+#playerScore{
+    margin-left: 100px;
+    font-size: 25px;
+}
+
+/* .image{
+    visibility: hidden;
+} */
+
+
+  

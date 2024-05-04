@@ -1,0 +1,509 @@
+<html>
+  <head></head>
+
+  <body>
+<canvas id="canvas1" width="600" height="600"></canvas>
+    <div id="space_invaders"></div>
+
+<style>
+
+
+body {
+/* background:#023020; */
+
+background: black;
+}
+
+#canvas1 {
+	
+	border:10px solid white;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+</style>
+
+    <script>
+
+
+//add docuemnt content loades so we don't wait for DOM TO load
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Hello World!");
+
+
+
+
+
+  const canvas = document.getElementById("canvas1");
+const ctx = canvas.getContext("2d");
+
+
+
+
+
+
+
+//GLOBAL VARS
+
+const CANVASWIDTH = 600;
+
+const CANVASHEIGHT = 600;
+
+let moveLeftRight = 0;
+
+let gameOn = false;
+
+let snakeLength = 5;
+
+let score = 0;
+
+
+ 
+
+
+function createSnake(x,y,width,height,xspeed,yspeed)  {
+return {
+
+xcor: x,
+ycor: y,
+width: width,
+height: height,
+xspeed: xspeed,
+yspeed: yspeed
+
+
+ }
+}
+
+function createFood()  {
+return {
+
+xcor: 20,
+ycor: 20,
+width: 10,
+height: 10,
+isFood: true
+
+ }
+}
+
+
+
+// build snake array
+
+let snakeArr = [];
+
+let snakeXcor = 20;
+
+let snakeYcor = 20;
+
+let snakeWidth = 20;
+
+let snakeHeight = 20;
+
+let moveUpDown = 0;
+
+let snakeSpeed = 5;
+
+let snakeYSpeed = 1;
+
+moveLeftRight = snakeSpeed;
+
+
+
+
+function buildSnake() {
+
+for (let i = 0; i < snakeLength; i++){
+
+
+snakeArr.push(createSnake(snakeXcor,snakeYcor,snakeWidth,snakeHeight,snakeSpeed,snakeYSpeed))
+
+snakeXcor += 40;
+
+}
+
+
+}
+
+
+console.log(snakeArr);
+
+
+function drawSnake() {
+
+
+    snakeArr.forEach(snakePart => {
+      
+
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(snakePart.xcor,snakePart.ycor,snakePart.width,snakePart.height);
+     
+    })
+
+
+}
+
+buildSnake();
+
+
+let snakeHead = snakeArr[snakeArr.length -1];
+
+
+function moveSnakeHead() {
+
+
+
+
+snakeHead.xcor += moveLeftRight;
+snakeHead.ycor += moveUpDown;
+
+
+}
+
+function moveSnakeBody() {
+
+for (let i = 0; i < snakeArr.length - 1; i++){
+
+  snakeArr[i].xcor = snakeArr[i+1].xcor;
+
+  snakeArr[i].ycor = snakeArr[i+1].ycor;
+}
+
+
+
+}
+
+//track coordinates of first element in snake array
+
+function trackFirstElement() {
+
+console.log(snakeArr[0].xcor)
+
+
+}
+
+function extendSnakeArr() {
+
+snakeArr.unshift(createSnake(snakeArr[0].xcor,snakeArr[0].ycor,20,20));
+
+//snakeArr.push(createSnake(20,20,20,20))
+
+console.log('snake extended')
+
+}
+
+
+ 
+function clearCanvas(){
+    //ctx.clearRect(0,0,CANVASWIDTH,CANVASHEIGHT);
+
+    ctx.clearRect(0,0,CANVASWIDTH,540);
+
+
+
+    // ctx.clearRect(snakeArr[0].xcor,snakeArr[0].ycor,snakeArr[0].width + 20 ,snakeArr[0].height + 20)
+
+    // ctx.clearRect(snakeArr[0].xcor - 20,snakeArr[0].ycor -20,snakeArr[0].width - 20 ,snakeArr[0].height - 20)
+}
+
+//create a function to build snake food;
+
+let snakeFood = createFood();
+
+function makeSnakeFood() {
+
+
+
+// set new snake food to random coordinates
+
+snakeFood.xcor = Math.random() * (CANVASWIDTH - 100);
+
+snakeFood.ycor = Math.random() * (CANVASHEIGHT - 100);
+
+
+
+}
+
+makeSnakeFood();
+
+function drawSnakeFood() {
+
+ctx.fillStyle = 'red';
+
+ctx.fillRect(snakeFood.xcor,snakeFood.ycor,snakeFood.width,snakeFood.height);
+}
+
+
+//build collision detection
+
+const rectCollision = (sender, receiever) => {
+
+//collision functionality
+
+if (
+    sender.xcor < receiever.xcor + receiever.width &&
+   sender.xcor + sender.width > receiever.xcor &&
+   sender.ycor < receiever.ycor + receiever.height &&
+   sender.ycor + sender.height > receiever.ycor
+
+   
+ )  {
+   // Collision detected!
+
+console.log('rect collision detected');
+
+
+
+if (receiever.isFood == true){
+    makeSnakeFood();
+    
+    
+    extendSnakeArr();
+    
+    score += 10;
+    
+
+}
+else {
+  
+  gameOver();
+
+
+}
+
+
+ }
+}
+
+
+//create container function for collisions
+
+function collisionFuncContainer() {
+
+ snakeArr.forEach(bodypart => {
+
+    if (bodypart != snakeArr[snakeArr.length - 1] && bodypart != snakeArr[snakeArr.length - 2] && bodypart != snakeArr[snakeArr.length - 3]  ){
+
+    rectCollision(bodypart,snakeHead);
+
+    }
+})
+
+
+rectCollision(snakeHead,snakeFood);
+
+
+}
+
+
+function boundsCheck(){
+
+if (snakeHead.xcor <= 0 || (snakeHead.xcor + snakeHead.width) >= CANVASWIDTH){
+  gameOver();
+}
+else if (snakeHead.ycor <= 0 || snakeHead.ycor + snakeHead.height > 540){
+  gameOver();
+}
+
+
+
+}
+
+function drawScore() {
+
+
+  ctx.clearRect(0,500,CANVASWIDTH,200);
+
+  ctx.fillStyle = 'white';
+  ctx.font = "25px Arial";
+  ctx.fillText("SCORE: " + score, 375, 585);
+
+
+
+
+}
+
+function borderLine() {
+  	//create line for bottom border
+	ctx.lineWidth = 10;
+	ctx.beginPath();
+	ctx.strokeStyle = 'white';
+	//ctx.setLineDash([30, 35]);
+	
+	ctx.moveTo(0, 550);
+	ctx.lineTo(CANVASWIDTH, 550);
+	ctx.stroke();
+}
+
+
+function startScreen() {
+
+
+
+  ctx.fillStyle = 'white';
+  ctx.font = "50px Arial";
+  ctx.fillText('SNAKE', CANVASWIDTH * 0.35, CANVASHEIGHT * 0.35);
+
+
+  ctx.fillStyle = 'white';
+  ctx.font = "50px Arial";
+  ctx.fillText('ENTER: START', CANVASWIDTH * 0.22, CANVASHEIGHT * 0.55);
+
+
+
+}
+
+
+
+function setAllIntervals(){
+
+let snakeDraw = setInterval(drawSnake,5);
+
+
+
+let bodyMove = setInterval(moveSnakeBody,100);
+
+let headMove = setInterval(moveSnakeHead,20);
+
+let clearTheCanvas = setInterval(clearCanvas,100);
+
+let trackElement = setInterval(trackFirstElement,1000);
+
+let collisContain = setInterval(collisionFuncContainer,100);
+
+let drawTheSnakeFood = setInterval(drawSnakeFood,5);
+
+let checkBoundries = setInterval(boundsCheck,100);
+
+let scoreDraw = setInterval(drawScore,2000);
+
+let drawSeparator = setInterval(borderLine,20);
+
+gameOn = true;
+
+//drawScore();
+
+
+}
+
+
+
+
+
+
+function gameOver(){
+
+  console.log('gameOver');
+
+location.reload();
+
+
+
+}
+
+
+
+//build gaming controls
+
+window.addEventListener("keyup", function(e){
+
+switch (e.keyCode) {
+
+        case 39: //move right
+
+       
+        //snakeSpeed = 5;
+        console.log(`snakeHead ${snakeHead.xcor}`);
+        if (moveLeftRight == 0){
+        moveUpDown = 0;
+        moveLeftRight = snakeSpeed;
+        //snakeTail.ycor = snakeHead.ycor
+        }
+    
+		break;
+
+        case 37: //move left
+        
+        if (moveLeftRight == 0) {
+        moveUpDown = 0;
+        moveLeftRight = -snakeSpeed;
+        //snakeTail.ycor = snakeHead.ycor
+        }
+          break;
+
+          case 38: //move up
+        if (moveUpDown == 0){
+        moveLeftRight = 0;
+        moveUpDown = -snakeSpeed;
+        //snakeTail.xcor = snakeHead.xcor
+        
+        }
+          break;
+
+          case 40: //move down
+
+        if (moveUpDown == 0){
+        moveLeftRight = 0;
+        moveUpDown = snakeSpeed;
+        //snakeTail.xcor = snakeHead.xcor
+        }
+    
+          break;
+
+}
+
+
+
+if (e.key == 'e' || e.key == 'E'){
+
+console.log('e key pressed');
+
+extendSnakeArr();
+
+console.log(snakeArr);
+
+
+  }
+
+  if (e.keyCode == 13){
+
+console.log('ENTER key pressed');
+
+//location.reload();
+
+if (gameOn == false){
+
+setAllIntervals();
+
+}
+
+
+  }
+  
+
+
+
+});
+
+
+//start and end the game when conditions are met
+
+startScreen();
+
+
+
+
+
+
+
+
+
+
+});
+    </script>
+  </body>
+</html>

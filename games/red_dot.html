@@ -1,0 +1,2371 @@
+<html>
+  <head></head>
+
+  <body>
+<canvas id="canvas1" width="600" height="600"></canvas>
+    <div id="space_invaders"></div>
+
+<style>
+
+
+body {
+/* background:#023020; */
+
+background: black;
+}
+
+#canvas1 {
+	
+	border:10px solid white;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+</style>
+
+    <script>
+
+
+//add docuemnt content loades so we don't wait for DOM TO load
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Hello World!");
+
+
+//GLOBAL VARIABLES
+
+const canvas = document.getElementById("canvas1");
+const ctx = canvas.getContext("2d");
+
+const canvasWidth = 600;
+
+const canvasHeight = 600;
+
+let numEnemies = 10;
+
+let numAllies = 2;
+
+let numBuildings = 0;
+
+let enemiesArr = [];
+
+let triangle;
+
+let leftArrowState = true;
+
+let rightArrowState = true;
+
+let downArrowState = true;
+
+let upArrowState = true;
+
+
+
+let gameStatusOn = true;
+
+let playerBulletArray = [];
+
+let reloadArr = [];
+
+let directBullet = 15;
+
+let readyToFire = false;
+
+let bulletState = false;
+
+let playerBulletXcor = 0;
+
+let bulletFired = false;
+
+let allyCalled = false;
+
+let friendlyArr = [];
+
+let score = 0;
+
+let points = 0;
+
+let maxBulletradius = 100;
+
+let maxAllyradius = 100;
+
+let allySpeed = 15;
+
+let redDotActive = false;
+
+let playerBulletRadius = 6;
+
+let playerBulletSpeed = 15;
+
+let allyExplosionZone = Math.random() * canvasHeight;
+
+let playerBulletExplosionZone = Math.random() * canvasHeight;
+
+let gameIsOver = false;
+
+let enemySpeed = 5;
+
+let winCondition = false;
+
+let killCount = 0;
+
+let totalEnemies = 10;
+
+let remainingEnemies = 0;
+
+let gameStarted = false;
+
+let canPause = true;
+
+let canControlPlayer = true;
+
+let shells = totalEnemies * 50;
+
+let buildingCollisionCounter = 0;
+
+//create variables for levels
+
+let level = 1;
+
+//create variables for sound effects
+
+// let bombExplosion = new Audio('fire 6.mp3');
+
+// let allyExplodeSound = new Audio('fire 6.mp3');
+
+let bombExplosion = new Audio('http://localhost:5500/redDotsounds/boom1.wav');
+
+
+let allyExplodeSound = new Audio('http://localhost:5500/redDotsounds/boom1.wav');
+
+//let gameOverSound = new Audio('Game Over.mp3');
+
+let gameOverSound = new Audio('http://localhost:5500/redDotsounds/boom5.wav');
+
+let titleSong = new Audio('http://localhost:5500/redDotsounds/titleSong.mp3');
+
+let startScreenText = 'THE RED DOT';
+
+let boomOne = new Audio('http://localhost:5500/redDotsounds/boom3.wav');
+
+let robot = new Audio('http://localhost:5500/redDotsounds/robot.wav');
+
+let buildingDown = new Audio('http://localhost:5500/redDotsounds/boom5.wav');
+
+
+
+
+//create function to track if win condition has been met
+
+function winConditionCheck() {
+
+    //track remaining enemies;
+
+remainingEnemies = totalEnemies - killCount;
+
+  if (remainingEnemies <= 0){
+
+    winCondition = true;
+
+    console.log(`winCondition ${winCondition}`);
+    console.log(`killCount ${killCount}`);
+    console.log(`totalEnemies ${totalEnemies}`);
+    console.log(`remainingEnemies ${remainingEnemies}`);
+
+    resetLevelChange();
+  }
+
+
+
+
+}
+
+
+
+
+//create gate for enemies to cross
+
+const gate = {
+
+  xcor: 0, //canvasWidth  - 400,
+  ycor: canvasHeight - 55,
+  width: canvasWidth, // - 400,
+  height: 5
+
+
+}
+
+
+
+//create player object
+
+const player = {
+  xcor: 300,
+  ycor: 525,
+  width: 50,
+  height: 20,
+  radius: 5
+  
+  
+}
+
+//create red dot to override decoy interception of ballistic missles
+
+const redDot = {
+xcor: player.xcor,
+ycor: 300,
+width: 10,
+height: 10,
+radius: 2.5
+
+}
+
+//create function to increase difficulty of game over time
+
+function increaseDifficulty() {
+
+//increase enemy parameters that lead to more difficult game play
+
+const increaseEnemyParameters = () => {
+
+  // numEnemies += 0.25;
+
+  // enemySpeed += 0.025;
+
+  numEnemies += 1;
+
+  enemySpeed += 1;
+
+  numAllies += 0.5;
+
+
+
+}
+
+increaseEnemyParameters();
+
+
+}
+
+
+
+
+//create function to randomize allyExplosionZone;
+
+const AllyExplosionZone = () => {
+
+  allyExplosionZone = Math.random() * canvasHeight - (canvasHeight * 0.5);
+
+  //console.log(`allyExplosionZone ${allyExplosionZone}`);
+
+
+}
+
+//create function to randomize playerBullet explosion zone
+
+const PlayerBulletExplodeZone = () => {
+
+  playerBulletExplosionZone = Math.random() * canvasHeight - (canvasHeight * 0.5);
+
+
+}
+
+
+//create function to draw the gate
+
+function drawGate(){
+
+ctx.fillStyle = 'white';
+ctx.fillRect(gate.xcor,gate.ycor,gate.width,gate.height);
+
+
+}
+
+//create a function to draw buildings
+let buildingArr = [];
+
+//let buildingCounter = [];
+
+function createBuildings() {
+
+//insert buildings into building array
+
+buildingArr = [];
+
+numBuildings = 5;
+
+for (let i = 0; i < numBuildings; i++){
+
+buildingArr.push(createBuilding(Math.random() * 500, gate.ycor,Math.random() * 25 + 25,Math.random() * - 150 - 150));
+
+//buildingCounter = [...buildingArr];
+
+}
+
+
+
+
+//buildingCounter.push('placeholder');
+
+
+console.log(buildingArr);
+}
+
+createBuildings();
+
+function drawBuildings() {
+//draw buildings
+
+let drawBuilding = buildingArr.map(building => {
+
+  ctx.fillStyle = 'white';
+ctx.fillRect(building.xcor,building.ycor,building.width,building.height);
+
+
+
+
+})
+
+
+
+}
+
+//create function to have collision between enemies and buildings
+
+
+
+//create rectangle collision function
+
+
+const rectCollision = (sender, receiever) => {
+
+//collision functionality
+
+if (
+  sender.xcor < receiever.xcor + receiever.width &&
+   sender.xcor + sender.width > receiever.xcor &&
+   sender.ycor > receiever.ycor + receiever.height &&
+   sender.ycor + sender.height < receiever.ycor
+
+   
+ )  {
+   // Collision detected!
+   
+   sender.xcor = 5000;
+   
+
+   receiever.xcor = -5000;
+
+   //buildingCounter.shift();
+
+   buildingCollisionCounter += 1;
+
+   console.log(`buildingCollisionCounter ${buildingCollisionCounter}`);
+
+   buildingDown.play();
+
+console.log('rect collision detected');
+
+ }
+}
+
+function enemyBuildingCollision() {
+
+enemiesArr.forEach(enemy => {
+//console.log(enemy.ycor);
+  buildingArr.forEach(building => {
+// console.log(building.ycor);
+// console.log(building.xcor);
+    rectCollision(enemy,building);
+  })
+})
+
+
+
+}
+
+
+//create function to draw and move player object
+
+const playerFunc = () => {
+
+    //draw player
+    ctx.fillStyle = 'white'
+    
+    triangle =  
+    ctx.beginPath();
+   
+    ctx.moveTo(player.xcor + playerBulletXcor, 500 );
+    ctx.lineTo(player.xcor + 10, player.ycor);
+    ctx.lineTo(player.xcor - 10, player.ycor);
+    
+    ctx.fill();
+
+    // ctx.fillRect(player.xcor - player.width * 0.5,player.ycor,20,20);
+}
+
+
+//create a function to clear entire canvas
+
+const clearCanvas = () => {
+
+ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+}
+
+
+
+
+//build a factory function to generate enemy circles
+
+  function createEnemy() {
+    return {
+    xcor: Math.random() * canvasWidth,
+    ycor: Math.random() * canvasHeight,
+    // xcor: 300,
+    // ycor: 300,
+    radius: 6,
+    width: 6,
+    height: 6,
+    direction: Math.random() * 5 - 2.5,
+    speed: Math.ceil(Math.random() * 2.5 + 2.5),
+    alive: true,
+    decoyArr: [],
+    isBullet: false,
+    isFriendly: false,
+    collisionDetected: false,
+    createDecoys: function() {
+      return {
+        xcor: this.xcor,
+        ycor: this.ycor,
+        radius: 4,
+        direction: this.direction,
+        speed: this.speed,
+        alive: true
+
+
+      }
+    }
+    
+  }
+  }
+
+
+//build a factory function to generate buildings
+
+function createBuilding(x,y,width,height) {
+  return {
+    xcor: x,
+    ycor: y,
+    width: width,
+    height: height
+
+  }
+}
+
+
+  //build a factory function to generate bullets
+
+
+function createBullet(x,y,w,h,s,r,xs,bf) {
+return  {
+  xcor: x,
+  ycor: y,
+  width: w,
+  height: h,
+  speed: s,
+  radius: r,
+  xspeed: xs,
+  bulletFired: false,
+  isBullet: true,
+  collisionDetected: false
+}
+
+
+}
+
+
+//build function to increase number of allies by spending points
+
+function increaseAllies() {
+
+  const increaseNumAllyCost = 100;
+
+  if (points - increaseNumAllyCost >= 0) {
+
+    if (numAllies < numEnemies){
+
+    points -= increaseNumAllyCost;
+
+    numAllies += 1;
+    }
+
+  }
+
+  console.log(`numAllies ${numAllies}`);
+
+
+}
+
+//create function to increase bomb radius
+
+function increaseBombRadius() {
+
+const increaseRadius = 100;
+
+if (points - increaseRadius >= 0){
+
+  if (maxBulletradius < 200){
+
+  points -= increaseRadius;
+
+  maxBulletradius += 10;
+  }
+}
+
+console.log(`maxBulletradius ${maxBulletradius}`);
+
+
+}
+
+//create function to increase ally speed
+
+function increaseAllySpeed() {
+
+const increaseSpeed = 200;
+
+if (points - increaseSpeed >= 0){
+
+  if (allySpeed < 15) {
+
+  points -= increaseSpeed;
+
+  allySpeed += 1;
+  }
+}
+
+console.log(`allySpeed ${allySpeed}`);
+
+
+}
+
+
+
+
+//build function to draw score, points, numAllies, numEnemies, and bomb radius 
+
+
+function drawScorePlusPoints(){
+	
+	// ctx.fillStyle = 'white';
+	// ctx.font = "25px Arial";
+	// ctx.fillText("Score: " + score, 25, 575);
+
+    function drawPoints() {
+      ctx.fillStyle = 'white';
+      ctx.font = "25px Arial";
+      ctx.fillText("Points: " + points, 375, 575);
+
+  }
+
+  function drawNumEnemies() {
+      ctx.fillStyle = 'white';
+      ctx.font = "25px Arial";
+      ctx.fillText("Enemies: " + Math.floor(numEnemies), 25, 25);
+
+  }
+
+  function drawNumAllies() {
+      ctx.fillStyle = 'white';
+      ctx.font = "25px Arial";
+      ctx.fillText("Allies: " + numAllies, 375, 25);
+
+  }
+
+  function drawBombRadius() {
+      ctx.fillStyle = 'white';
+      ctx.font = "20px Arial";
+      ctx.fillText("Bomb Radius: " + maxBulletradius, 175, 575);
+
+  }
+
+  function drawAllySpeed() {
+      ctx.fillStyle = 'white';
+      ctx.font = "20px Arial";
+      ctx.fillText("Ally Speed: " + allySpeed, 200, 25);
+
+  }
+
+  function drawKillCount() {
+      ctx.fillStyle = 'white';
+      ctx.font = "20px Arial";
+      ctx.fillText("Kill Count: " + killCount, 175, 575);
+
+  }
+
+  function drawRemainingEnemies() {
+      ctx.fillStyle = 'white';
+      ctx.font = "20px Arial";
+      ctx.fillText("Enemies: " + remainingEnemies, 12.5, 585);
+
+  }
+
+  function drawLevel() {
+      ctx.fillStyle = 'white';
+      ctx.font = "20px Arial";
+      ctx.fillText("Level: " + level, 175, 585);
+
+  }
+
+  function drawShells() {
+      ctx.fillStyle = 'white';
+      ctx.font = "20px Arial";
+      ctx.fillText("Shells: " + shells, 375, 585);
+
+  }
+
+
+  drawShells();
+ 
+drawRemainingEnemies();
+
+drawLevel();
+
+  //drawKillCount();
+
+  // drawNumEnemies();
+
+  // drawNumAllies();
+
+  // drawPoints();
+
+ // drawBombRadius();
+	
+  //drawAllySpeed();
+	
+
+}
+
+
+  //use for loop to fill an array with enemy circles
+
+  const fillArrWithEnemies = () => {
+
+  for (let i = 0; i < numEnemies; i++){
+    enemiesArr.push(createEnemy());
+
+  }
+}
+
+  //build function to fill decoy arr within enemy object
+
+  const fillDecoyArr = () => {
+
+let createDecoys = enemiesArr.map(enemy => {
+  for (let i = 0; i < 5; i++){
+  enemy.decoyArr.push(enemy.createDecoys());
+  }
+});
+
+
+}
+
+  //use for loop to fill an array with friendly circles
+
+  const fillFriendlyArr = () => {
+
+for (let i = 0; i < numAllies; i++){
+  friendlyArr.push(createEnemy());
+
+}
+//alter array so that we know these are allies. This way they will not generate points when we shoot them
+
+let makeFriends = friendlyArr.map(friend => friend.isFriendly = true);
+
+
+}
+
+fillArrWithEnemies();
+
+fillDecoyArr();
+
+fillFriendlyArr();
+
+//console.log(friendlyArr);
+
+//create a function to refill enemy circle array when it becomes empty
+
+const refillEnemyCircArr = () => {
+
+if (enemiesArr.length < 1){
+  fillArrWithEnemies();
+  fillDecoyArr()
+  //fillFriendlyArr();
+  moveEnemiesUp();
+  
+}
+
+}
+
+//create function to refill friendlyArr
+
+const refillFriendArr = () => {
+
+if (friendlyArr.length < 1){
+  
+  fillFriendlyArr();
+  moveFriendliesDown();
+  
+}
+}
+
+
+
+//use map to move enemy circles and decoys upward on y-axis and friendlies downward on y-axis
+const moveEnemiesUp = () => {
+let moveEnemiesUp = enemiesArr.map(enemy => {
+    enemy.ycor -= 1000;
+let moveDecoysUp = enemy.decoyArr.map(decoy => {
+
+  decoy.ycor -= 1000;
+
+
+})
+});
+// let moveAlliesDown = friendlyArr.map(friend => {
+//   friend.ycor += 1000;
+// })
+}
+
+//create function to move friendlies down
+
+const moveFriendliesDown = () => {
+
+  let moveAlliesDown = friendlyArr.map(friend => {
+  friend.ycor += 1000;
+})
+
+}
+moveFriendliesDown();
+moveEnemiesUp();
+//create function to monitor if enemies are still alive
+
+const checkIfAlive = () => {
+
+//use map to change alive status of enemy if enemy has traveled past bottom of canvas (y-axis);
+
+let checkIfPastBottomOfCanvas = enemiesArr.map(enemy => {
+
+  if (enemy.ycor > 600 || enemy.xcor < 0 || enemy.xcor > canvasWidth){
+    enemy.alive = false;
+    enemiesArr.splice(enemiesArr.indexOf(enemy),1);
+    // console.log('enemy has left the canvas');
+    // console.log(`enemyArr.length ${enemiesArr.length}`);
+  }
+
+  //use map to change alive status of friendly if it has traveled off canvas
+
+  let checkIfFriendlyPastBottomOfCanvas = friendlyArr.map(friend => {
+
+if (friend.ycor < 0 || friend.xcor < 0 || friend.xcor > canvasWidth){
+  friend.alive = false;
+  friendlyArr.splice(friendlyArr.indexOf(friend),1);
+  // console.log('enemy has left the canvas');
+
+}
+  });
+
+  //take out decoys and empty decoy arrays if they meet same conditions as above for enemies
+  // let removeDecoys = enemy.decoyArr.map(decoy => {
+  //   if (decoy.ycor > 600 || decoy.xcor < 0 || decoy.xcor > canvasWidth){
+  //   decoy.alive = false;
+  //   enemy.decoyArr.splice(enemy.decoyArr.indexOf(decoy),1);
+  //    console.log('decoy has left the canvas');
+  //    console.log(`decoyArr.length ${enemy.decoyArr.length}`);
+  //    console.log(`decoyArr ${enemy.decoyArr}`);
+  //    console.log(`enemyArr ${enemiesArr}`);
+  // }
+
+
+
+  // })
+})
+
+
+
+}
+
+
+
+//create function to move enemy circles and decoys down the board
+
+const moveEnemyCircles = () => {
+    //clearCanvas();
+    let moveEnemies = enemiesArr.map(enemy => {
+       
+       //move enemy circles
+
+      
+        enemy.xcor += Math.floor(enemy.direction);
+     
+       // enemy.ycor +=enemy.speed;
+
+        enemy.ycor += enemySpeed;
+
+
+        
+      //move decoys with circles
+
+    let moveDecoys = enemy.decoyArr.map(decoy => {
+
+        decoy.xcor += Math.floor(decoy.direction);
+     
+        decoy.ycor += enemySpeed;
+      
+    
+
+
+
+    })
+        
+    });
+
+    let moveFriendies = friendlyArr.map(friend => {
+       
+       //move enemy circles
+
+      
+        friend.xcor += Math.floor(friend.direction);
+     
+        //friend.ycor += -(friend.speed);
+
+        friend.ycor += -(allySpeed);
+
+    });
+
+}
+
+//create function to draw enemy circles and decoys
+
+const drawEnemies = () => {
+    
+    let drawEnemies = enemiesArr.map(enemy => {
+
+       //draw enemy circles
+      
+        ctx.fillStyle = "purple"
+        ctx.beginPath();
+        ctx.arc(enemy.xcor, enemy.ycor, enemy.radius, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // draw decoys with circles
+
+    let drawDecoys = enemy.decoyArr.map(decoy => {
+        ctx.fillStyle = "violet"
+        ctx.beginPath();
+        ctx.arc(decoy.xcor, decoy.ycor, decoy.radius, 0, 2 * Math.PI);
+        ctx.fill();
+
+
+    })
+       
+        
+    }); 
+
+    let drawFriends = friendlyArr.map(friend => {
+
+//draw friendly circles
+
+ ctx.fillStyle = "white"
+ ctx.beginPath();
+ ctx.arc(friend.xcor, friend.ycor, friend.radius, 0, 2 * Math.PI);
+ ctx.fill();
+
+
+    });
+
+    //draw red dot
+
+    function drawRedDot() {
+    if (redDotActive == true){
+
+      redDot.ycor -= 1;
+
+      //reset redDot when it leaves canvas
+
+      if (redDot.ycor < 0){
+        redDot.ycor = player.ycor;
+        redDotActive = false;
+      }
+    
+   
+
+      ctx.fillStyle = "red"
+      ctx.beginPath();
+      ctx.arc(redDot.xcor, redDot.ycor, redDot.radius, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+    else {return}
+  }
+
+
+  //drawRedDot();
+  
+
+}
+
+//create a site dot
+
+function drawSite(){
+  
+  //calcTraject();
+
+  ctx.fillStyle = "red"
+      ctx.beginPath();
+      ctx.arc(redDot.xcor, redDot.ycor, redDot.radius, 0, 2 * Math.PI);
+      //ctx.arc(finalXDist, finalYDist, redDot.radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+
+
+
+
+}
+
+
+
+
+
+function calcTraject() {
+
+//redDot.ycor = 200;
+
+
+let startingDotYcor = 200;
+
+//redDot.ycor = Math.abs(playerBulletXcor * 4) + startingDotYcor;
+
+redDot.ycor = playerBulletXcor * 5 + startingDotYcor;
+
+//redDot.ycor = startingDotYcor;
+
+// calculations to figure out x corr based on y
+  let xRate = playerBulletXcor;
+
+  //let yRate = directBullet;
+
+  let yRate = 20;
+
+  let dotHeight = canvasHeight - redDot.ycor;
+
+  let numBulletMovements = dotHeight/yRate;
+
+  let dotXtraject = xRate * numBulletMovements;
+
+  let placeDotX = player.xcor + dotXtraject;
+
+  
+
+  redDot.xcor = placeDotX;
+
+  
+
+
+
+
+
+
+  
+
+
+  console.log(`playerBulletXcor ${playerBulletXcor}`);
+
+  console.log(`directbullet ${directBullet}`);
+
+  console.log(`dotHeight ${dotHeight}`);
+
+  console.log(`numBulletMovements ${numBulletMovements}`);
+
+  console.log(`dotXtraject ${dotXtraject}`);
+ 
+  console.log(`placeDotX ${placeDotX}`);
+
+
+  console.log(`redDot.xcor ${redDot.xcor}`);
+
+  console.log(`redDot.ycor ${redDot.ycor}`);
+
+
+
+}
+
+calcTraject();
+
+//create game over feature
+
+const gameOver = () => {
+
+  // let detectIfEnemyPastGate = enemiesArr.map(enemy => {
+
+  //   if (enemy.ycor >= gate.ycor){
+  //     if (enemy.xcor >= gate.xcor && enemy.xcor <= gate.width + gate.xcor){
+
+  
+
+  
+
+    if (buildingCollisionCounter == numBuildings){
+
+        
+        clearInterval(setIntervalFunc);
+
+        gameIsOver = true;
+
+         //play game over soundd
+        
+         gameOverSound.play();
+
+         //clear canvas
+
+         //ctx.clearRect(0,0,canvasWidth,canvasHeight * 0.5)
+
+
+    function gameOverText() {
+//draw game over screen
+if (gameIsOver == false){return}
+      else if (gameIsOver == true) {
+        ctx.fillStyle = 'white';
+	      ctx.font = "50px Arial";
+	      ctx.fillText('GAME OVER', canvasWidth * 0.25, canvasHeight * 0.5)
+        ctx.font = "30px Arial";
+      }
+    }
+    function pressEnter() {
+      if (gameIsOver == false){return}
+      else if (gameIsOver == true) {
+        ctx.fillStyle = 'white';
+	      ctx.font = "30px Arial";
+        ctx.fillText("Press Enter", canvasWidth * 0.37, canvasHeight * 0.65);
+        gameStatusOn = false;
+        gameIsOver = true;
+      }
+    }
+
+    pressEnter();
+
+//set intervals to draw game over text
+    setInterval(gameOverText,500);
+    //setInterval(pressEnter,500);
+
+      //create function to clear canvas to make start game text appear to flash
+
+      function flashText() {
+        if (gameIsOver == false){return}
+        else if (gameIsOver == true) {
+        //ctx.clearRect(0,0,canvasWidth,canvasHeight * 0.5);
+        ctx.clearRect(100,250,500,100);
+        }
+      }
+
+ clearStartText = setInterval(flashText,1000);
+
+
+
+        window.addEventListener("keyup", function(e){
+
+	        if (e.keyCode == 13){
+	
+           location.reload();
+
+
+}
+        });
+      //}
+    //}
+//     else if (winCondition == true){
+//       clearInterval(setIntervalFunc);
+
+//       gameIsOver = true;
+
+//       gameStatusOn = false;
+      
+
+//        //play game over sound
+
+//        gameOverSound.play();
+
+//        //clear upper part of canvas
+
+//        ctx.clearRect(0,0,canvasWidth,canvasHeight)
+
+
+//         function drawYouWin(){ 
+//         //draw game over screen
+//         if (gameIsOver == false){return}
+//         else if (gameIsOver == true) {
+//         ctx.fillStyle = 'white';
+// 	      ctx.font = "50px Arial";
+// 	      ctx.fillText('YOU WIN', canvasWidth * 0.30, canvasHeight * 0.5)
+//         }
+//         }
+
+//         function drawPressEnter(){
+//           if (gameIsOver == false){return}
+//         else if (gameIsOver == true) {
+//           ctx.fillStyle = 'white';
+//           ctx.font = "30px Arial";
+//         ctx.fillText("Press Enter", canvasWidth * 0.37, canvasHeight * 0.65);
+//         }
+//         }
+
+//         setTimeout(drawPressEnter,1000);
+
+//         //create interval to draw You win
+
+//         setInterval(drawYouWin,500);
+
+//         //setInterval(drawPressEnter,250);
+
+
+//         //clear canvas
+
+//         function flashText() {
+//         if (gameIsOver == false){return}
+//         else if (gameIsOver == true) {
+//         ctx.clearRect(0,0,canvasWidth,canvasHeight * 0.5);
+//         }
+//       }
+
+//  clearYouWinText = setInterval(flashText,750);
+
+
+      
+//         // gameStatusOn = false;
+//         // gameIsOver = true;
+//         window.addEventListener("keyup", function(e){
+
+//       if (e.keyCode == 13){
+
+//         location.reload();
+
+
+//           }
+//             });
+
+    //}
+
+ // })
+    }
+  }
+
+
+
+// create pause screen feature
+
+const pauseScreen = () => {
+
+if (gameStatusOn == false){
+  if (gameIsOver == false){
+  
+
+
+  setIntervalFunc = setInterval(intervalFunc,20);
+
+  gameStatusOn = true;
+
+  canControlPlayer = true;
+  }
+}
+
+else if(gameStatusOn == true){
+
+  clearInterval(setIntervalFunc);
+
+ctx.fillStyle = 'white';
+	ctx.font = "50px Arial";
+	ctx.fillText('PAUSE', canvasWidth * 0.35, canvasHeight * 0.5);
+  gameStatusOn = false;
+  canControlPlayer = false;
+
+}
+}
+
+// create pause screen feature
+
+const resetLevelChange = () => {
+
+if (gameStatusOn == false){
+  if (gameIsOver == false){
+
+//make game pausable
+canPause = true;
+canControlPlayer = true;
+
+  setIntervalFunc = setInterval(intervalFunc,20);
+
+  gameStatusOn = true;
+  }
+}
+
+else if(gameStatusOn == true){
+
+  //make game not pausable during level change
+
+canPause = false;
+
+canControlPlayer = false;
+
+  clearInterval(setIntervalFunc);
+
+  //increase game difficulty
+
+level += 1;
+totalEnemies += 2;
+
+//reset killCount
+
+killCount = 0;
+
+//reset shells
+
+shells = totalEnemies * 2;
+
+//reset building collison counter
+
+buildingCollisionCounter = 0;
+
+//reset building configuration
+
+createBuildings();
+
+
+
+//reset enemy positions
+
+let resetEnemies = enemiesArr.map(enemy => {
+
+  enemy.xcor += 5000;
+  
+});
+
+let resetPlayerBullets = playerBulletArray.map(bullet => {
+  bullet.xcor += 5000;
+})
+
+ctx.fillStyle = 'white';
+	ctx.font = "50px Arial";
+	ctx.fillText('Level ' + level, canvasWidth * 0.35, canvasHeight * 0.5);
+
+
+  gameStatusOn = false;
+
+  winCondition = false;
+
+  setTimeout(resetLevelChange,3000);
+
+
+}
+
+}
+
+//create function to measure distance between allies and red dot 
+
+const redDotDistance = (ax,bx) => {
+
+if (redDotActive == false){return}
+
+else if (redDotActive == true){
+
+  let xLength = ax - bx;
+
+  let moveAlliesIntoRedDot = friendlyArr.map(friend => {
+
+  if (xLength >= 0){
+
+  friend.xcor += redDot.xcor/200;
+
+
+
+  }
+
+  else if (xLength < 0) {
+
+    
+ 
+
+    friend.xcor -= redDot.xcor/200
+
+  }
+
+  })
+
+}
+
+}
+
+//create container for red dot distance to easily call function
+
+const redDotDistContainer = () => {
+
+let calcRedDist = friendlyArr.map(friend => {
+
+
+  redDotDistance(redDot.xcor,friend.xcor);
+
+})
+}
+
+
+
+//create circle collision function 
+
+const circleCollision = (ax,bx,ay,by,aradius,bradius,bullet,enemy) => {
+
+//let xLength = Math.abs(ax -bx);
+
+//let yLength = Math.abs(ay-by);
+
+let xLength = ax - bx;
+
+let yLength = ay-by;
+
+let distBtw = Math.sqrt(xLength**2 + yLength**2);
+
+
+
+//create condition where decoys will appear when player bullet gets too close to enemy cricle
+if (distBtw < 200){
+let decoyScatter = enemiesArr.map(enemy => {
+  enemy.decoyArr.map(decoy => {
+    if (bullet.radius + decoy.radius >= distBtw) {
+
+ //enemy.decoyArr.splice(enemy.decoyArr.indexOf(decoy),1);
+
+// playerBulletArray.splice(playerBulletArray.indexOf(bullet),1);
+
+
+
+}
+   //play robot noise
+   robot.play();
+    decoy.xcor += Math.random() * 100 - 50;
+    decoy.ycor -= Math.random() * 100 - 50;
+
+    if (xLength >= 0 &&  redDotActive == false && bullet.isBullet == false ){
+
+     bullet.xcor -= decoy.xcor/500;
+     //enemy.xcor -= bullet.xcor/500;
+     //enemy.ycor -= bullet.ycor/500;
+
+
+     //bullet.radius += 1;
+      // if (bullet.radius > 10){
+      //   bullet.xcor = 1000;
+      // }
+     
+    }
+    else if (xLength < 0 && redDotActive == false && bullet.isBullet == false ){
+      bullet.xcor += decoy.xcor/500;
+      //enemy.xcor += bullet.xcor/500;
+     // enemy.ycor -= bullet.ycor/500;
+
+
+      //bullet.radius += 1;
+      // if (bullet.radius > 10){
+      //   bullet.xcor = 1000;
+      // }
+     
+    }
+     //bullet.xcor = decoy.xcor;
+     //decoy.ycor = bullet.ycor;
+    
+
+//     if (xLength >= 0){
+//   //bullet.xcor -= decoy.xcor/500
+//   bullet.xcor = decoy.xcor;
+//   // enemy.xcor -= bullet.xcor/50
+// }
+// else if (xLength < 0){
+//   //bullet.xcor += decoy.xcor/500
+//   bullet.xcor = decoy.xcor;
+//   // enemy.xcor += bullet.xcor/50
+// }
+//create collision detection for player bullet and decoys
+
+
+    
+  })
+
+});
+//})
+
+}
+
+
+
+//create collision detection scenario and do something when collision is detected
+
+if (aradius + bradius >= distBtw) {
+
+  console.log('circle collision detected');
+
+  console.log(`distBtw ${distBtw}`);
+
+  enemy.alive = false;
+
+  bullet.collisionDetected = true;
+
+  //increase score and points earned when player shoots enemy
+
+  if (enemy.isFriendly == false){
+
+  score += 10;
+
+  points += 5;
+
+  killCount += 1;
+
+  boomOne.play();
+
+    // if (numEnemies < 500){
+
+  //numEnemies += 1;
+
+  //enemySpeed += 0.1;
+
+ 
+
+  //numAllies = Math.floor(numEnemies * 0.5);
+
+  //console.log(`numEnemies ${numEnemies}`);
+    //}
+  }
+
+  
+  enemiesArr.splice(enemiesArr.indexOf(enemy),1);
+
+  friendlyArr.splice(friendlyArr.indexOf(enemy),1);
+
+  //playerBulletArray.splice(playerBulletArray.indexOf(bullet),1);
+
+
+}
+
+}
+
+//create container for collision function calls
+
+const collisionContainer = () => {
+
+  //collision detection for bullet and enemy
+
+  enemiesArr.forEach(enemy => {
+    playerBulletArray.forEach(bullet => {
+      circleCollision(enemy.xcor,bullet.xcor,enemy.ycor,bullet.ycor,enemy.radius,bullet.radius,bullet,enemy)
+    })
+  });
+
+//collision detection for friendlies and enemies
+  enemiesArr.forEach(enemy => {
+    friendlyArr.forEach(friend => {
+      circleCollision(enemy.xcor,friend.xcor,enemy.ycor,friend.ycor,enemy.radius,friend.radius,friend,enemy)
+    })
+  });
+
+  //collision detection between player bullet and friendly
+  // friendlyArr.forEach(friend => {
+  //   playerBulletArray.forEach(bullet => {
+  //     circleCollision(friend.xcor,bullet.xcor,friend.ycor,bullet.ycor,friend.radius,bullet.radius,bullet,friend)
+  //   })
+  // });
+  
+  //collision detection for friendly and enemy decoys
+  
+//   enemiesArr.forEach(enemy => {
+//     enemy.decoyArr.forEach(decoy => {
+//     friendlyArr.forEach(friend => {
+//       circleCollision(decoy.xcor,friend.xcor,decoy.ycor,friend.ycor,decoy.radius,friend.radius,friend,enemy,decoy)
+//     })
+//   });
+// })
+
+}
+
+//create reload mechanism to reload player bullets
+
+const reload = () => {
+
+
+  reloadArr = [];
+
+
+}
+
+//create function to make player bullet explode when it reach certain point on y-axis traveling up the canvas
+
+function playerBulletExpand() {
+
+
+// let ExpandBullet = playerBulletArray.map(bullet => {
+
+// if (bullet.ycor > 150){return}
+
+// else if (bullet.ycor < 150){
+
+bulletExpansion();
+
+}
+//});
+//}
+
+//create explosion function for allies
+
+const allyExpansion = () => {
+
+  // increase ally radius
+
+  let allyExp = friendlyArr.map(friend => {
+
+    if (friend.ycor > allyExplosionZone) {return}
+
+    else if (friend.ycor < allyExplosionZone){
+
+
+    const increaseAllyRad = () => {
+      while (friend.radius < maxAllyradius){
+        friend.radius += 1;
+
+      }
+
+    }
+    increaseAllyRad();
+
+
+//set timeout function so ally appears to blow up
+
+const explodeAlly = () => {
+
+  if (friend.radius >= maxAllyradius){
+
+
+    friend.xcor = 2000;
+
+    allyExplodeSound.play();
+
+
+
+//friendlyArr.splice(friendlyArr.indexOf(friend),1);
+
+//friendlyArr.splice(friend,1);
+
+
+
+}
+
+else {return}
+
+
+}
+    
+    
+
+setTimeout(explodeAlly,50);
+}
+
+  })
+
+}
+
+//create condition where allies blow up on their own
+
+const alliesBlowUp = () => {
+
+  let alliesExplode = friendlyArr.map(friend => {
+    if (friend.ycor > allyExplosionZone){return}
+
+    else if(friend.ycor < allyExplosionZone){
+
+      allyExpansion();
+
+    }
+
+    
+
+
+  });
+
+}
+
+//create explosion function for player bullets
+let expansionRate = 0;
+
+
+const bulletExpansion = () => {
+
+  //increase bullet radius
+
+
+  let bulletExpand = playerBulletArray.map(bullet => {
+
+
+// if (bullet.ycor > playerBulletExplosionZone){return}
+
+if (bullet.ycor < playerBulletExplosionZone || bullet.collisionDetected == true){
+
+// if (bullet.collisionDetected == true) {
+
+
+ const increaseBulletRad = () => {
+  
+
+  while (bullet.radius < maxBulletradius){
+
+    bullet.radius += 1;
+  }
+ }
+
+ increaseBulletRad();
+ 
+
+
+
+  //create timeout function so that bullet appears to blow up
+  
+  const explodeBullet = () => {
+
+
+
+  if (bullet.radius >= maxBulletradius){
+
+
+
+  //playerBulletArray.splice(playerBulletArray.indexOf(bullet),1);
+
+  bullet.xcor = 2000;
+
+  //play sound explosion sound effect
+
+  bombExplosion.play();
+
+ // bullet.radius = 5;
+  }
+
+  else {return}
+
+
+  }
+
+
+  setTimeout(explodeBullet,50);
+}
+
+});
+
+
+}
+
+
+//create mechanism to fire player bullets
+
+
+const playerBulletCopies = () => {
+
+    
+
+//if (reloadArr.length > 1000) {
+  if(playerBulletArray.length > 50){
+  
+  playerBulletArray.shift();
+  }
+  //return;
+  //playerBulletArray = [];
+//}
+
+//console.log(`playerBulletArray ${playerBulletArray}`);
+
+playerBulletArray.push(createBullet(player.xcor,player.ycor,2,5,directBullet,playerBulletRadius,playerBulletXcor, false))
+reloadArr.push(createBullet(player.xcor,player.ycor,2,5,directBullet,1,playerBulletXcor, false))
+
+// console.log(playerBulletArray);
+}
+
+const fireBulletCopies = () => {
+
+playerBulletArray.forEach(playerBullet => {
+
+
+
+
+playerBullet.ycor -= directBullet;
+
+
+playerBullet.xcor += playerBullet.xspeed;
+
+playerBullet.radius += 0.5;
+
+//ensure player bullet does not exit canvas at top and hit enemies
+
+if (playerBullet.ycor <= 0) {
+
+  playerBulletArray.splice(playerBulletArray.indexOf(playerBullet),1);
+  //playerBullet.xcor = 2000;
+}
+
+
+
+
+
+//make bullet appear to flash by making radius expand and shrink slightly
+
+//playerBullet.radius -= 0.05d
+
+
+
+ctx.fillStyle = 'orange';
+
+ctx.beginPath();
+ctx.arc(playerBullet.xcor, playerBullet.ycor, playerBullet.radius, 0, 2 * Math.PI);
+ctx.fill();
+
+
+//ctx.fillRect(playerBullet.xcor,playerBullet.ycor,playerBullet.width,playerBullet.height);
+
+//}
+
+
+})
+
+
+}
+
+
+
+   //manipulate bulletspeed
+
+   changeBulletSpeed = (speed) => {
+
+      
+
+directBullet = speed;
+
+//directBullet = speed;
+
+
+}
+
+//create interval function to wrap all setIntervals
+
+let intervalFunc = () => {
+
+  checkIfAlive();
+
+  clearCanvas();
+
+  drawEnemies();
+
+ 
+
+  moveEnemyCircles();
+
+  playerFunc();
+
+  fireBulletCopies();
+
+  refillEnemyCircArr();
+
+
+  refillFriendArr();
+
+  collisionContainer();
+
+  drawScorePlusPoints();
+
+  //redDotDistContainer();
+
+  alliesBlowUp();
+
+  AllyExplosionZone();
+
+  PlayerBulletExplodeZone();
+
+  playerBulletExpand();
+
+  gameOver();
+
+  drawGate();
+
+  winConditionCheck();
+
+  drawSite();
+
+
+
+  drawBuildings();
+
+  enemyBuildingCollision();
+  
+
+}
+
+
+// let setIntervalFunc = setInterval(intervalFunc,20);
+
+// let increaseGameDiffInt = setInterval(increaseDifficulty,5000);
+
+
+
+
+const drawStartScreen = () => {
+
+
+
+  function drawStartGame() {
+
+     
+
+
+    function drawStartText() {
+
+      function changeStartText() {
+
+        startScreenText = "START GAME";
+
+      }
+
+      setTimeout(changeStartText,3000);
+
+      if (gameStarted == false){
+      ctx.fillStyle = 'white';
+      ctx.font = "50px Arial";
+      ctx.fillText(startScreenText, canvasWidth * 0.22, canvasHeight * 0.5);
+      }
+    }
+
+ drawStart = setInterval(drawStartText,500);
+
+      //create function to clear canvas to make start game text appear to flash
+
+      function flashText() {
+        if (gameStarted == true){return}
+        else if (gameStarted == false) {
+        ctx.clearRect(0,0,canvasWidth,canvasHeight * 0.5);
+        }
+      }
+
+ clearStartText = setInterval(flashText,1000);
+
+if (gameStarted == true){
+  clearInterval(clearStartText);
+}
+
+   
+
+
+  }
+  
+
+  function pressEnter() {
+      ctx.fillStyle = 'white';
+      ctx.font = "30px Arial";
+      ctx.fillText("Press Enter", canvasWidth * 0.37, canvasHeight * 0.65);
+
+  }
+
+
+
+  drawStartGame();
+
+  setTimeout(pressEnter,1000);
+
+
+  window.addEventListener("click", function(){
+if (gameStarted == false){
+ titleSong.play();
+}
+
+  });
+
+
+  window.addEventListener("keyup", function(e){
+
+      if (e.keyCode == 13){
+    
+
+        if (gameStarted == false){
+
+        titleSong.pause();
+
+         setIntervalFunc = setInterval(intervalFunc,20);
+
+         //increaseGameDiffInt = setInterval(increaseDifficulty,5000);
+
+        gameStarted = true;
+
+      
+        }
+         //check if game is over and if it is, end the interval
+
+  function checkIfGameOver() {
+
+if (gameIsOver == true){
+      clearInterval(setIntervalFunc);
+      //clearInterval(increaseGameDiffInt)
+    }
+
+
+
+}
+
+let checkGameOver = setInterval(checkIfGameOver,20);
+
+      }
+});
+
+
+ 
+
+}
+
+
+drawStartScreen();
+
+
+
+//add player input controls
+
+
+
+const playerIntervalRight = () => {
+
+  //move player paddle right
+
+const moveExp = () => {
+//move player right
+// if (player.xcor >= gate.xcor + gate.width - player.width * 0.5){return}
+// else{
+// player.xcor += 10;
+// }
+
+//rotate player to the right
+
+if (playerBulletXcor > 15 ){return}
+else{
+  playerBulletXcor += 1;
+
+
+
+
+  calcTraject();
+
+
+  
+ //redDot.xcor += 15;
+
+
+
+
+ // redDot.xcor += playerBulletXcor * 2;
+
+
+
+  
+  // if (redDot.xcor > 300) {
+  // redDot.ycor += 100 //= 300 + Math.abs(playerBulletXcor);
+  // }
+  // else if (redDot.xcor < 300) {
+  //   redDot.ycor -= 100 //= 300 + Math.abs(playerBulletXcor);
+  // }
+  // else {
+  //   redDot.ycor = 300;
+  // }
+
+
+
+ console.log(`playerBulletXcor ${playerBulletXcor}`);
+
+ //console.log(`redDot.ycor ${redDot.ycor}`);
+
+}
+
+
+
+}
+ 
+
+	 if (rightArrowState == true && leftArrowState == true && canControlPlayer == true) {
+	
+	 newInt = setInterval(moveExp,20)
+	}
+	else {
+	clearInterval(newInt)
+	}
+ 
+}
+
+
+
+
+const playerIntervalLeft = () => {
+
+  //move player paddle left
+
+const moveExpdown = () => {
+
+  //move player ot the left
+//   if (player.xcor <= gate.xcor + player.width * 0.5){return}
+// else{
+// player.xcor -= 10;
+// }
+
+
+//rotate player to the left
+
+if (playerBulletXcor < -15 ){return}
+else{
+  playerBulletXcor -= 1;
+
+  //redDot.ycor += 5; 
+
+
+
+   calcTraject();
+  
+  
+  //redDot.xcor -= 15;
+
+
+
+
+
+
+  // if (redDot.xcor < 300) {
+  //   redDot.ycor += 100  //= 300 + Math.abs(playerBulletXcor);
+  // }
+  // else if (redDot.xcor > 300) {
+  //   redDot.ycor -= 100 // = 300 + Math.abs(playerBulletXcor);
+  // }
+  // else {
+  //   redDot.ycor = 300;
+  // }
+ 
+
+// redDot.xcor += playerBulletXcor;
+  
+//  redDot.ycor -= playerBulletXcor;
+
+  console.log(`playerBulletXcor ${playerBulletXcor}`);
+
+  //console.log(`redDot.ycor ${redDot.ycor}`);
+
+
+  
+}
+
+}
+
+	if (leftArrowState == true && rightArrowState == true && canControlPlayer == true) {
+	
+	 newInt = setInterval(moveExpdown,20)
+	}
+	else {
+	clearInterval(newInt)
+	}
+ 
+}
+
+const playerIntervalDown = () => {
+
+//move player paddle left
+
+const moveExpdown = () => {
+if (playerBulletXcor > 25 ){return}
+else{
+  playerBulletXcor += 1;
+  
+}
+
+}
+
+if (upArrowState == true && downArrowState == true && canControlPlayer == true) {
+
+ newInt = setInterval(moveExpdown,20)
+}
+else {
+clearInterval(newInt)
+}
+
+}
+
+const playerIntervalUp = () => {
+
+//move player paddle left
+
+const moveExpUp = () => {
+if (playerBulletXcor > -25 ){return}
+else{
+  playerBulletXcor -= 1;
+}
+
+}
+
+if (upArrowState == true && downArrowState == true && canControlPlayer == true) {
+
+ newInt = setInterval(moveExpUp,20)
+}
+else {
+clearInterval(newInt)
+}
+
+}
+
+
+
+//ADD GAME CONTROLS TO MOVE PADDLE
+
+
+window.addEventListener("keydown", function(e){
+
+switch (e.keyCode) {
+        //case 37:
+           // alert('left');
+		   
+		 
+		  
+            //break;
+        case 39:
+            //alert('up');
+			
+			if (rightArrowState == false){
+			break;}
+			else{
+			
+			playerIntervalRight();
+			
+			rightArrowState = false;
+		
+			
+			
+		 }
+            break;	
+        case 37:
+            //alert('down')
+			
+			if (leftArrowState == false){
+			break;
+			}
+			else{
+			playerIntervalLeft();
+			
+			leftArrowState = false;
+			
+			
+		
+			}
+            break;
+    }
+	
+});
+
+
+window.addEventListener("keyup", function(e){
+
+switch (e.keyCode) {
+        //case 38:
+
+        // case 39:
+
+        // if (downArrowState == false){
+        //   break
+        // }
+        // else{
+        // playerIntervalDown();
+        // downArrowState = false
+        // }
+       
+       // playerBulletXcor < 100 ? playerBulletXcor += 5 : console.log(`playerBulletXcor ${playerBulletXcor}`)
+        
+
+        // console.log('up arrow pressed');
+		  
+            //break;
+          //case 40:
+          //   case 37:
+
+          // if (upArrowState == false){
+          //   break
+          // }
+          // else {
+          // playerIntervalUp();
+          // upArrowState = false
+          // }
+         
+         // playerBulletXcor > -100 ? playerBulletXcor -= 5 : console.log(`playerBulletXcor ${playerBulletXcor}`)
+
+          // console.log('down arrow pressed');
+          //break;
+        case 39:
+            //alert('up');
+
+    
+	
+		 playerIntervalRight();
+		 
+		 rightArrowState = true;
+    
+		break;
+
+ case 37:
+
+			playerIntervalLeft();
+		 
+		 leftArrowState = true;
+ 
+ 
+ 
+            //alert('down');
+	
+            break;
+    }
+
+});
+
+
+
+
+//add key events
+
+window.addEventListener("keyup", function(e){
+
+	if (e.key == 'p' || e.key == 'P'){
+
+    console.log(`winCondition ${winCondition}`);
+
+    if (winCondition == false){
+      if(canPause == true){
+	
+  pauseScreen();
+      }
+    }
+
+  //resetLevelChange();
+  
+
+  
+  //gameOn = false;
+  
+  //console.log(`gameOn status: ${gameOn}`)
+  
+  
+
+
+}
+
+  if (e.key == 'f' || e.key == 'F'){
+
+  //  if (redDotActive == true) { return }
+
+  //  else if (redDotActive == false) {
+
+    if (canControlPlayer == true){
+      if (shells > 0){
+    
+    
+    //boomOne.play();
+    shells -= 1;
+    changeBulletSpeed(playerBulletSpeed);
+    playerBulletCopies();
+      }
+    }
+
+
+//    if (bulletFired == false) {
+
+//     changeBulletSpeed(playerBulletSpeed);
+//     playerBulletCopies();
+//     bulletFired = true;
+//    }
+//    else if (bulletFired == true){
+
+//     bulletExpansion();
+//     bulletFired = false;
+
+//     console.log('BOOM!!!');
+   
+   //}
+ }
+
+  if (e.key == 'a' || e.key == 'a'){
+
+    increaseAllies();
+
+    console.log('a key pressed');
+  
+  }
+
+  
+  if (e.key == 'b' || e.key == 'B'){
+
+increaseBombRadius();
+
+console.log('b key pressed');
+
+}
+
+if (e.key == 's' || e.key == 'S'){
+
+increaseAllySpeed();
+
+console.log('s key pressed');
+
+}
+
+// if (e.key == 'c' || e.key == 'C'){
+
+//   allyExpansion();
+
+// if (allyCalled == false){
+// refillFriendArr();
+// allyCalled = true;
+// }
+
+// else if (allyCalled == true){
+
+//   allyExpansion();
+
+//   allyCalled = false;
+
+//   console.log('Allies Go Boom!!!');
+
+// }
+
+// console.log('c key pressed');
+
+// }
+
+
+
+
+// if (e.key == 'r' || e.key == 'R'){
+
+// if (redDotActive == false){
+//   redDotActive = true;
+//   redDot.xcor = player.xcor;
+// }
+
+
+// console.log(`redDotActive ${redDotActive}`);
+// console.log('r key pressed');
+
+//}
+
+});
+
+});
+
+
+
+    </script>
+  </body>
+</html>

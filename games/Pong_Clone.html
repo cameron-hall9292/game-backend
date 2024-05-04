@@ -1,0 +1,966 @@
+<html>
+  <head></head>
+
+  <body>
+<canvas id="canvas1" width="1000" height="500"></canvas>
+    <div id="game"></div>
+
+<style>
+
+
+body {
+background:#023020;
+}
+
+#canvas1 {
+	
+	border:10px solid white;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+</style>
+
+    <script>
+	document.addEventListener("DOMContentLoaded", () => {
+  console.log("Hello World!");
+
+
+//Declare game objects ball and paddle
+
+//GLOBAL VARIABLES
+
+let XCOR = 20;
+
+let YCOR = 20;
+
+let SWIDTH = 20;
+
+let SHEIGHT = 20;
+
+const CANVAS_WIDTH = 1000;
+
+const CANVAS_HEIGHT = 500;
+
+//create global interval for all interval functions
+
+const funcInterval = 15;
+
+
+//make ball serve randomly from x and y axis;
+
+let DIRECT_X = Math.floor(Math.random() * 20 - 10);
+//PREVENT DIRECT_X FROM BEING ZERO
+if (DIRECT_X >= -4 && DIRECT_X <= 4) DIRECT_X = 5;
+
+//let DIRECT_Y = 0.34;
+
+
+let DIRECT_Y = Math.floor(Math.random() * 12 - 6);
+//PREVENT DIRECT_Y FROM BEING ZERO
+if (DIRECT_Y >= -4 && DIRECT_Y <= 4) DIRECT_Y = 5;
+
+
+let absoluteDIRECT_Y;
+
+
+
+
+// change value of directMod to adjust game difficulty
+
+//lower directMod values correlates to easier difficulty whereas a higher value translates to a higher game difficulty
+
+let directyMod = 0.5
+
+let rateOfMovement = 4;
+
+let gameDifficulty;
+
+
+let BALL;
+
+let BORDER;
+
+let PADDLE;
+
+let PADDLEX = 25;
+
+let PADDLEY = 175;
+
+let PADDLEW = 20;
+
+let PADDLEH = 125;
+
+let borderWidth = 10;
+
+let playerScore = 0;
+
+let computerScore = 0;
+
+let ballSpeed;
+
+let gameStatus = true;
+
+//create sound variables
+
+let hit = new Audio('http://localhost:5500/pongsounds/Pop.OGG');
+
+//"http://localhost:5500/pongsounds/Pop.OGG"
+
+let score = new Audio('http://localhost:5500/pongsounds/Score.OGG');
+
+let muffexplosion = new Audio('http://localhost:5500/pongsounds/muffled_explosion.WAV');
+
+let fuse = new Audio('http://localhost:5500/pongsounds/fuse.OGG');
+
+let bigExplosion = new Audio('http://localhost:5500/pongsounds/synthetic_explosion_1.FLAC');
+
+let peeep = new Audio('http://localhost:5500/pongsounds/peeep.OGG');
+
+let peep = new Audio('http://localhost:5500/pongsounds/peep.OGG');
+
+let plop = new Audio('http://localhost:5500/pongsounds/plop.OGG');
+
+
+let count = 0;
+
+let upArrowState = true;
+
+let downArrowState = true;
+
+let paddleSpeed = 1;
+
+let playerResult;
+
+let winScore = 11;
+
+let gameOn = false;
+
+let gameDifficultyScreen = false;
+
+let gameModeScreen = false;
+
+let gameDiffDisplay = 'EASY';
+
+let gameModeDisplay = 'FIRST TO 11';
+
+//const gameOff = true;
+
+
+
+
+const movingRect  = {
+
+XCOR: 500,
+YCOR: Math.round(Math.random() * 450),
+SWIDTH:10,
+SHEIGHT:10
+
+};
+
+const playerRect = {
+
+PADDLEX:15,
+
+PADDLEY:225,
+
+PADDLEW:10,
+
+PADDLEH: 50
+
+}
+
+const computerRect = {
+
+PADDLEX:975,
+
+PADDLEY:225,
+
+PADDLEW:10,
+
+PADDLEH: 50
+}
+
+
+
+
+
+const canvas = document.getElementById("canvas1");
+const ctx = canvas.getContext("2d");
+
+
+const drawMovingRect = (x,y,w,h) => {
+	
+	ctx.fillRect(x,y,w,h);
+	ctx.fillStyle = 'white';
+
+	// const width = 10;
+
+	// ctx.beginPath();
+	// ctx.arc(x, y, width, 0, 2 * Math.PI);
+	// ctx.fill();
+
+  }
+  
+ // this draws the player paddle, computer paddle, and the dashed border line;
+  
+ const drawPaddle = (x,y,w,h) => {
+	ctx.fillStyle = 'white';
+	
+	
+	//create dashed border line
+	ctx.lineWidth = 10;
+	ctx.beginPath();
+	ctx.strokeStyle = 'white';
+	ctx.setLineDash([30, 35]);
+	
+	ctx.moveTo(500, 0);
+	ctx.lineTo(500, 500);
+	ctx.stroke();
+	
+	
+	
+	//create player paddle;
+	
+	ctx.fillRect(x,y,w,h);
+	
+
+
+
+  }
+  
+  
+
+//functions to manipulate cordinates of ball		
+
+const moveRectx = (x) => x = x;
+const moveRecty = (y) => y = y;
+const moveRectw = (w) => w = w;
+const moveRecth = (h) => h = h;
+
+
+
+
+//create curve on the ball
+
+const curveBall = () => {
+
+if (DIRECT_Y > 0){
+DIRECT_Y+=0.15
+}
+else if (DIRECT_Y < 0)
+DIRECT_Y-=0.15;
+
+
+}
+
+
+const increaseY = () => {
+
+
+DIRECT_Y++;
+
+}
+
+
+
+
+const decreaseY = () => {
+
+DIRECT_Y--
+
+
+}
+
+
+const moveRect = () => {
+
+if (computerScore == winScore && gameModeDisplay == 'FIRST TO 11'){
+
+gameStatus = false;
+
+playerResult = 'LOSE';
+}
+else if (playerScore == winScore && gameModeDisplay == 'FIRST TO 11'){
+
+gameStatus = false;
+
+playerResult = 'WIN'
+
+}
+
+else if (computerScore >= winScore && (computerScore - playerScore >= 2) && gameModeDisplay == 'CLASSIC 11'){
+
+gameStatus = false;
+
+playerResult = 'LOSE'
+
+}
+
+else if (playerScore >= winScore && (playerScore - computerScore >= 2) && gameModeDisplay == 'CLASSIC 11'){
+
+gameStatus = false;
+
+playerResult = 'WIN'
+
+}
+
+//clear old paint from canvas
+
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+//call function that draws the paddles.
+movePaddle();
+
+
+//call function that moves computer paddle
+moveComputerRect();
+
+
+
+//move the ball;
+
+movingRect.XCOR += DIRECT_X;
+movingRect.YCOR -= DIRECT_Y;
+
+
+//create point conditions and reset game when someone scores;
+
+if (movingRect.XCOR < playerRect.PADDLEX) {
+computerScore += 1;
+peep.play();
+gameReset();
+
+ 
+ }
+ 
+ else if (movingRect.XCOR > computerRect.PADDLEX){
+ playerScore += 1;
+ peep.play();
+ gameReset();
+
+  
+ 
+ }
+ 
+
+
+
+//make ball bounce off top and bottom of canvas border with random bounce;
+
+if (movingRect.YCOR >= CANVAS_HEIGHT - SHEIGHT) {
+
+DIRECT_Y = Math.random() * 5 + 5; 
+plop.play();
+}
+
+
+if (movingRect.YCOR <= 0) {
+ 
+DIRECT_Y = Math.random() * -5 - 5; 
+plop.play();
+
+}
+
+drawMovingRect(moveRectx(movingRect.XCOR),moveRecty(movingRect.YCOR),moveRectw(movingRect.SWIDTH),moveRecth(movingRect.SHEIGHT));
+
+collisionDetection(playerRect,movingRect);
+collisionDetection(computerRect,movingRect);
+
+drawScore();
+}
+
+
+//this is a bad variable name; this just draws the paddles; it does not move them;
+const movePaddle = () => {
+
+
+drawPaddle(playerRect.PADDLEX,playerRect.PADDLEY,playerRect.PADDLEW,playerRect.PADDLEH);
+drawPaddle(computerRect.PADDLEX,computerRect.PADDLEY,computerRect.PADDLEW,computerRect.PADDLEH);
+
+}
+
+
+
+
+
+const collisionDetection = (playerRect,movingRect) => {
+  if (
+    playerRect.PADDLEX < movingRect.XCOR + movingRect.SWIDTH &&
+    playerRect.PADDLEX + playerRect.PADDLEW > movingRect.XCOR &&
+    playerRect.PADDLEY < movingRect.YCOR + movingRect.SHEIGHT &&
+    playerRect.PADDLEY + playerRect.PADDLEH > movingRect.YCOR
+  ) 
+    // Collision detected!
+	
+	//create spin on the ball
+	
+	
+	
+	if (movingRect.YCOR < playerRect.PADDLEY + playerRect.PADDLEH * 0.45){
+
+	
+
+	DIRECT_Y = Math.random() * 5 + 5
+	
+	
+	DIRECT_X *= -1;
+	
+	// increase speed of ball speed on x-axis when ball hits top of paddle
+	
+	if (DIRECT_X < 0 && Math.abs(DIRECT_X) <= 50) DIRECT_X--; else DIRECT_X++;
+	
+	plop.play();
+		
+	
+	}
+	else if (movingRect.YCOR > playerRect.PADDLEY + playerRect.PADDLEH *0.55) {
+	
+	
+	DIRECT_Y = Math.random() + -5 - 5;
+
+	DIRECT_X *= -1;
+	
+	//decrease ball speed on x-axis when ball hits bottom of paddle
+	
+	if (DIRECT_X < 0 && Math.abs(DIRECT_X) <= 50) DIRECT_X--; else DIRECT_X++;
+	
+	
+		plop.play();	
+
+	}
+	
+	else {
+	
+	
+	DIRECT_Y = 0;
+	
+	DIRECT_X *= -1;
+	
+		plop.play();
+		
+	}
+}
+	
+
+
+
+//prevent player paddle from going out of bounds:
+
+const inbounds = () => {
+
+if (playerRect.PADDLEY >= 450){
+playerRect.PADDLEY = 450;
+}
+else if (playerRect.PADDLEY <= 0){
+playerRect.PADDLEY = 0;
+}
+}
+
+//prevent computer paddle from going out of bounds:
+
+const inboundsComp = () => {
+
+if (computerRect.PADDLEY >= 450){
+computerRect.PADDLEY = 450;
+}
+else if (computerRect.PADDLEY <= 0){
+computerRect.PADDLEY = 0;
+}
+}
+
+
+//move player paddle up
+
+const moveExp = () => {
+//inbounds();
+playerRect.PADDLEY -= 10;
+
+
+}
+
+const playerInterval = () => {
+
+	if (upArrowState == true && downArrowState == true) {
+	
+	 newInt = setInterval(moveExp,funcInterval)
+	}
+	else {
+	clearInterval(newInt)
+	}
+ 
+}
+
+
+//move player paddle down
+
+const moveExpdown = () => {
+playerRect.PADDLEY += 10;
+
+
+}
+
+const playerIntervaldown = () => {
+
+	if (downArrowState == true && upArrowState == true) {
+	
+	 newInt = setInterval(moveExpdown,funcInterval)
+	}
+	else {
+	clearInterval(newInt)
+	}
+ 
+}
+
+
+
+
+
+
+//ADD GAME CONTROLS TO MOVE PADDLE
+
+
+window.addEventListener("keydown", function(e){
+
+switch (e.keyCode) {
+        case 37:
+           // alert('left');
+		   
+		 
+		  
+            break;
+        case 38:
+            //alert('up');
+			
+			if (upArrowState == false){
+			break;}
+			else{
+			
+			playerInterval();
+			
+			upArrowState = false;
+		
+			
+			
+		 }
+            break;	
+        case 40:
+            //alert('down')
+			
+			if (downArrowState == false){
+			break;
+			}
+			else{
+			playerIntervaldown();
+			
+			downArrowState = false;
+			
+			
+		
+			}
+            break;
+    }
+	
+});
+
+
+window.addEventListener("keyup", function(e){
+
+switch (e.keyCode) {
+        case 37:
+           // alert('left');
+		   
+		 
+		  
+            break;
+        case 38:
+            //alert('up');
+	
+		 playerInterval();
+		 
+		 upArrowState = true;
+		 
+		break;
+
+ case 40:
+ 
+ 
+			playerInterval();
+		 
+		 downArrowState = true;
+ 
+ 
+ 
+            //alert('down');
+	
+            break;
+    }
+
+});
+
+function drawScore(){
+	
+	ctx.fillStyle = 'white';
+	ctx.font = "100px Arial";
+	ctx.fillText(playerScore, 220, 100);
+	
+	
+	ctx.fillStyle = 'white';
+	ctx.fillText(computerScore, 740, 100);
+}
+
+
+const gameOver = () => {
+
+
+playerScore = 0;
+
+computerScore = 0;
+
+gameStatus = true;
+
+gameOn = false;
+
+peep.play();
+peeep.play();
+ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+ctx.fillStyle = 'white';
+ctx.textBaseline = 'middle';
+ctx.testAlign = 'center';
+ctx.font = "25px Arial";
+ctx.fillText(`ENTER: RETRY`, 50, 50);
+
+ctx.fillText(`S: START SCREEN`, 600, 50);
+
+
+ctx.font = "100px Arial";
+
+ctx.fillText(`YOU ${playerResult}`, 200, 250);
+clearInterval(checkGameStat);
+
+
+}
+
+
+//create function that moves the computer paddle;
+
+const moveComputerRect = () => {
+
+ absoluteDIRECT_Y = Math.abs(DIRECT_Y) * directyMod;
+
+ gameDifficulty = absoluteDIRECT_Y + rateOfMovement
+
+
+if (movingRect.YCOR > computerRect.PADDLEY + computerRect.PADDLEH*.75 && DIRECT_X > 0) {
+computerRect.PADDLEY += gameDifficulty
+}
+
+else if (movingRect.YCOR < computerRect.PADDLEY + computerRect.PADDLEH*.25 && DIRECT_X > 0) {
+computerRect.PADDLEY -= gameDifficulty
+}
+
+}
+
+
+
+
+//create function that resets the game when certain conditions are met;
+
+
+const gameReset = () => {
+
+
+movingRect.XCOR = 500;
+movingRect.YCOR = Math.random() * 450;
+
+DIRECT_X = Math.floor(Math.random() * 20 - 10);
+//PREVENT DIRECT_X FROM BEING ZERO
+if (DIRECT_X >= -4 && DIRECT_X <= 4) DIRECT_X = 10;
+
+
+DIRECT_Y = Math.floor(Math.random() * 12 - 6);
+//PREVENT DIRECT_Y FROM BEING ZERO
+if (DIRECT_Y >= -4 && DIRECT_Y <= 4) DIRECT_Y = 5;
+
+}
+
+const checkGameStatus = () => {
+if (gameStatus == false){
+clearInterval(moveRectInt);
+
+
+gameOver();
+}
+}
+
+//build a start screen
+
+const startScreen = () => {
+
+playerScore = 0;
+
+computerScore = 0;
+
+gameStatus = true;
+
+gameOn = false;
+
+
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = 'white';
+	
+	
+	ctx.font = "50px Arial";
+	ctx.fillText('PONG CLONE', 300, 100);
+
+	
+	ctx.font = "25px Arial";
+	ctx.fillText('PRESS ENTER TO START GAME', 300, 200);
+	
+	ctx.fillText(`DIFFICULTY: ${gameDiffDisplay}`, 300, 250);
+	
+	ctx.fillText(`MODE: ${gameModeDisplay}`, 300, 300);
+	
+	ctx.fillText('USE ARROW KEYS TO MOVE', 300, 350);
+	
+	ctx.fillText('D: DIFFICULTY', 10, 490);
+	
+	ctx.fillText('M: MODE', 300, 490);
+
+	}
+	
+	
+	const pauseScreen = () => {
+
+
+
+ctx.fillStyle = 'white';
+	ctx.font = "25px Arial";
+	ctx.fillText('PRESS ENTER TO RESUME', 350, 250);
+
+	}
+
+
+
+	
+
+//create functions to start and end game
+
+
+const startGame = () => {
+
+if (gameOn == false) {
+
+
+ moveRectInt = setInterval(moveRect,funcInterval);
+
+ checkGameStat = setInterval(checkGameStatus,funcInterval);
+}
+else {
+
+clearInterval(moveRectInt);
+
+clearInterval(checkGameStat);
+
+}
+}
+
+	
+	window.addEventListener("keyup", function(e){
+
+	if (e.keyCode == 13 && gameOn == false){
+		
+		
+		startGame();
+		
+		//console.log(gameOn);
+		
+		gameOn = true;
+	}
+	if (e.keyCode == 27 && gameOn == true){
+		
+		startGame();
+		
+		console.log(gameOn);
+		
+		gameOn = false;
+		
+		gameReset();
+		
+		startScreen();
+	
+	}
+	
+	
+	if ((e.key == 'p' || e.key == 'P')&& gameOn == true){
+	
+		pauseScreen();
+		
+		startGame();
+		
+		gameOn = false;
+		
+		
+		
+
+	
+	}
+	
+	
+	if ((e.key == 's' || e.key == 'S')&& gameOn == false){
+		
+		gameOn = true;
+		
+		startGame();
+		
+		gameOn = false;
+		
+		gameReset();
+		
+		startScreen();
+	
+		
+
+	
+	}
+	
+	// create game difficulty selection menu
+	
+		
+	if ((e.key == 'd' || e.key == 'D')&& gameOn == false){
+	
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		ctx.font = "25px Arial";
+		
+		ctx.fillText(`0: EASY`, 400, 100);
+
+		ctx.fillText(`1: MEDIUM`, 400, 200);
+		
+		ctx.fillText(`2: HARD`, 400, 300);
+		
+		ctx.fillText(`3: VERY HARD`, 400, 400);
+		
+		gameDifficultyScreen = true;
+	
+	}
+	
+			
+	if (e.key == '0' && gameDifficultyScreen == true){
+	directyMod = 0.5;
+	rateOfMovement = 1;
+	gameDiffDisplay = 'EASY';
+	//startGame();
+	
+	startScreen();
+		
+	
+	gameDifficultyScreen = false;
+	
+	console.log(`directyMod: ${directyMod} rateOfMovement${rateOfMovement}`);
+		
+	}
+	
+	else if (e.key == '1' && gameDifficultyScreen == true){
+	directyMod = 0.5;
+	rateOfMovement = 2;
+	gameDiffDisplay = 'MEDIUM';
+
+	
+	startScreen();
+		
+	gameDifficultyScreen = false;
+	console.log(`directyMod: ${directyMod} rateOfMovement${rateOfMovement}`);
+		
+	}
+	
+	else if (e.key == '2' && gameDifficultyScreen == true){
+	directyMod = 1;
+	rateOfMovement = 3;
+	gameDiffDisplay = 'HARD';
+
+	
+	startScreen();
+		
+	gameDifficultyScreen = false;
+	console.log(`directyMod: ${directyMod} rateOfMovement${rateOfMovement}`);
+		
+	}
+	
+	else if (e.key == '3' && gameDifficultyScreen == true){
+	directyMod = 1;
+	rateOfMovement = 4;
+	gameDiffDisplay = 'VERY HARD';
+;
+	startScreen();
+		
+	gameDifficultyScreen = false;
+	console.log(`directyMod: ${directyMod} rateOfMovement${rateOfMovement}`);
+		
+	}
+	
+
+	
+	if ((e.key == 'm' || e.key == 'M')&& gameOn == false){
+	
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		ctx.font = "25px Arial";
+		
+		ctx.fillText(`0: FIRST TO 11`, 400, 100);
+
+		ctx.fillText(`1: CLASSIC 11`, 400, 200);
+		
+		gameModeScreen = true;
+	
+	}
+	
+			
+	if (e.key == '0' && gameModeScreen == true){
+
+	gameModeDisplay = 'FIRST TO 11';
+
+	
+	startScreen();
+		
+	
+	gameModeScreen = false;
+	
+		
+	}
+	
+	else if (e.key == '1' && gameModeScreen == true){
+
+	gameModeDisplay = 'CLASSIC 11';
+
+	
+	startScreen();
+		
+	
+	gameModeScreen = false;
+		
+	}
+
+
+
+
+	
+	
+	
+	
+});
+
+startScreen();
+
+setInterval(inbounds,funcInterval);
+
+setInterval(inboundsComp,funcInterval);
+
+	});
+
+    </script>
+  </body>
+</html>
