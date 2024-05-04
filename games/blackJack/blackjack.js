@@ -836,14 +836,17 @@ function createAndReshuffleDeck(deck){
 
 function bet10(){
 
-    if (playerMoney < 10 || playerMoney <= playerBet) {
+    playerBet += 10;
+
+    if (playerMoney < playerBet) {
         alert("SORRY, INSUFFICIENT FUNDS");
+        playerBet -= 10;
         return
     }
 
     else {
 
-    playerBet += 10;
+ 
     let playersBet = document.getElementById('playerBet');
 
 playersBet.innerHTML = playerBet;
@@ -853,13 +856,16 @@ playersBet.innerHTML = playerBet;
 
 function bet100(){
 
-    if (playerMoney < 100 || playerMoney <= playerBet) {
+    playerBet += 100;
+
+    if ( playerMoney < playerBet) {
         alert("SORRY, INSUFFICIENT FUNDS");
+        playerBet -= 100;
         return
     }
     else {
 
-    playerBet += 100;
+ 
     let playersBet = document.getElementById('playerBet');
 
 playersBet.innerHTML = playerBet;
@@ -869,20 +875,22 @@ playersBet.innerHTML = playerBet;
 
 function bet1000(){
 
-    if (playerMoney < 1000 || playerMoney <= playerBet) {
+    playerBet += 1000;
+
+    if (playerMoney < playerBet) {
         alert("SORRY, INSUFFICIENT FUNDS");
+        playerBet -= 1000;
         return
     }
     else {
 
-    playerBet += 1000;
+    
     let playersBet = document.getElementById('playerBet');
 
 playersBet.innerHTML = playerBet;
     //playerMoney -= 1000;
     }
 }
-
 //create insurance function
 
 let insurancePlayed = false;
