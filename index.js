@@ -32,6 +32,8 @@ app.get("/api/newTest", (req, res) => {
 
 });
 
+// a comment to test things out
+
 
 
 //render images to client
