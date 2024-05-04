@@ -836,32 +836,51 @@ function createAndReshuffleDeck(deck){
 
 function bet10(){
 
+    if (playerMoney < 10) {
+        alert("SORRY, INSUFFICIENT FUNDS");
+        return
+    }
+
+    else {
+
     playerBet += 10;
     let playersBet = document.getElementById('playerBet');
 
 playersBet.innerHTML = playerBet;
     //playerMoney -= 10;
-
+    }
 }
 
 function bet100(){
+
+    if (playerMoney < 100) {
+        alert("SORRY, INSUFFICIENT FUNDS");
+        return
+    }
+    else {
 
     playerBet += 100;
     let playersBet = document.getElementById('playerBet');
 
 playersBet.innerHTML = playerBet;
     //playerMoney -= 100;
-
+    }
 }
 
 function bet1000(){
+
+    if (playerMoney < 1000) {
+        alert("SORRY, INSUFFICIENT FUNDS");
+        return
+    }
+    else {
 
     playerBet += 1000;
     let playersBet = document.getElementById('playerBet');
 
 playersBet.innerHTML = playerBet;
     //playerMoney -= 1000;
-
+    }
 }
 
 //create insurance function
@@ -1287,12 +1306,13 @@ function revealButton(button){
 //create function to check if player out of cash
 
 function checkIfGameOver(){
-    if (playerMoney > 0) return
+    if (playerMoney >= 10) return
     else {
         alert("SORRY, YOU ARE OUT OF CASH. GAMEOVER");
         location.reload();
     }
 }
+
 
 
 //hideButton(bet10But);
