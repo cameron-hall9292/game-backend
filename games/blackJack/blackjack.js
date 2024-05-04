@@ -1319,7 +1319,11 @@ function checkIfGameOver(){
 
 function submitBet(){
 
-    checkIfGameOver();
+    if (playerMoney < 10)  {
+        alert("SORRY, YOU ARE OUT OF CASH. GAMEOVER");
+        location.reload();
+        return
+    }
 
     if (playerBet === 0){
         alert("YOU MUST PLACE A BET!")
