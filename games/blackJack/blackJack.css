@@ -57,8 +57,13 @@ body{
         /* box-shadow: 0px 0px 2px 2px rgb(0,0,0); */
         width: 100px;
         height: 100px;
-        font-family: 'Crete Round'
+        font-family: 'Crete Round';
+        border: 2px solid black;
     
+  }
+
+  .button:hover{
+    color: red;
   }
 
 
