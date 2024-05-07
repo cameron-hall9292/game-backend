@@ -49,7 +49,7 @@ app.get("/api/:image", (req, res) => {
 //render pong_clone game
 
 
-
+//test to see if correct file
 
 
 
@@ -126,7 +126,7 @@ app.get("/blackjack", (req, res) => {
 });
 
 app.get("/blackjackcss", (req, res) => {
-  res.sendFile(__dirname + "/games/blackJack/blackJack.css");
+  res.sendFile(__dirname + "/games/blackJack/blackJack-2.css");
 });
 
 
