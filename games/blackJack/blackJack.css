@@ -1,97 +1,170 @@
 
-
+html{
+    font-size:62.5%;
+}
 
 
 
 body{
 	background-color:#35654d ;
-	margin:auto;
+	
     width:95%;
 
     color:white;
     font-family: 'Crete Round';
+    border: 5px solid yellow;
+    font-size: 2rem;
+
 
 
 }
 
 .main{
-    margin:auto;
-    width:95%;
+    border: 5px solid black;
+   
+    
    
 }
 
 .dealerCards{
-    margin:auto;
-    width:95%;
-  
+   
+
+   
+
+    border: 5px solid blue;
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    
+
 }
 
 .playerCards{
-    margin:auto;
-    width:95%;
+    
+   
+    border: 5px solid green;
+
+    
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    
+    
 
 }
+
+.image{
+    border: 5px solid white;
+  
+    /* display:none; */
+
+}
+
 
 
 .buttons{
     margin:auto;
     width:95%;
+    border: 5px solid red;
+    display:flex;
   
 }
 
 .button {
-   
+
+        
+        border: 5px solid black;
         position: relative;
    
         background-color:white;
 
-        background-size: cover; 
-        background-position: center; 
         color: BLACK;
-        border:none; 
+     
         /* border-radius:10px;  */
-        padding:10px;
+        
+        margin: auto;
+      
         min-height:10px; 
         min-width: 10px;
-        margin: 20px;
-        /* box-shadow: 0px 0px 2px 2px rgb(0,0,0); */
-        width: 100px;
-        height: 100px;
-        font-family: 'Crete Round';
-        border: 2px solid black;
+     
+      
+      
+     
+        width: 75px;
+        height: 50px;
+        font-family: 'Crete Round'
     
-  }
-
-  .button:hover{
-    color: red;
-    background-color: #35654d;
   }
 
 
 .data{
     font-family: 'Crete Round';
-    font-size: 25px;
+   
     
 }
 
 #betLabel{
-    margin-left:250px;
+    margin-left:100px;
 }
 
 #dealerScore{
     margin-left: 100px;
-    font-size: 25px;
+
 }
 
 
 #playerScore{
     margin-left: 100px;
-    font-size: 25px;
+ 
 }
 
-/* .image{
-    visibility: hidden;
-} */
+#winner{
+    display:block;
+    text-align: center;
+    margin: 1rem;
+}
 
+@media screen and (max-width: 480px) {
+    body {
+      background-color: red;
 
+    }
+    .image{
+
+        width:7rem;
+    }
+
+    .button {
+        width: 10rem;
+    }
+  }
+
+  @media screen and (min-width: 600px) {
+    .image {
+      width: 12rem;
+    }
+
+    .button {
+        width: 12rem;
+    }
+  }
+  
+  @media screen and (min-height: 800px) {
+    .image {
+      width: 10rem;
+    }
+
+    .button {
+        width: 10rem;
+    }
+
+    body{
+        font-size: 2.5rem;
+    }
+  }
   
