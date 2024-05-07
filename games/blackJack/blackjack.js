@@ -1,6 +1,8 @@
 
 //global vars
 
+let gameStart = false;
+
 let playerArr;
 let dealerArr;
 let playerMoney = 5000;
@@ -755,6 +757,14 @@ function playNextHand(){
     if (playerBet === 0){return}
     else {
 
+    //initiate game start state and reveal cards
+
+   if (gameStart == false) {
+    gameStart = true;
+    showHands("image");
+   }
+
+
     //reset dealer play boolean so that stand and hit functions will execute
 
     dealerHasPlayed = false;
@@ -1450,4 +1460,17 @@ function updatePlayerMoney(){
 function updatePlayerBet(){
     let playerBetRender = document.getElementById('playerBet');
     playerBetRender.innerHTML = playerBet
+}
+
+//create function to unhide all of the cards once game begins
+
+function showHands(className){
+
+    const elements = document.getElementsByClassName(className);
+ 
+    for (let element of elements){
+        element.style.display = "inline";
+       
+    }
+    console.log("cards have been revealed");
 }

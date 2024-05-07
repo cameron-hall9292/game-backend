@@ -12,26 +12,26 @@ body{
 
     color:white;
     font-family: 'Crete Round';
-    border: 5px solid yellow;
+    /* border: 5px solid yellow; */
     font-size: 2rem;
 
 
 
 }
 
-.main{
+/* .main{
     border: 5px solid black;
    
     
    
-}
+} */
 
 .dealerCards{
    
 
    
 
-    border: 5px solid blue;
+    /* border: 5px solid blue; */
 
     width: 100%;
 
@@ -45,7 +45,7 @@ body{
 .playerCards{
     
    
-    border: 5px solid green;
+    /* border: 5px solid green; */
 
     
     width: 100%;
@@ -59,9 +59,9 @@ body{
 }
 
 .image{
-    border: 5px solid white;
+    /* border: 5px solid white; */
   
-    /* display:none; */
+    display:none;
 
 }
 
@@ -70,7 +70,7 @@ body{
 .buttons{
     margin:auto;
     width:95%;
-    border: 5px solid red;
+    /* border: 5px solid red; */
     display:flex;
   
 }
@@ -78,7 +78,7 @@ body{
 .button {
 
         
-        border: 5px solid black;
+        /* border: 5px solid black; */
         position: relative;
    
         background-color:white;
@@ -135,10 +135,7 @@ body{
 }
 
 @media screen and (max-width: 480px) {
-    body {
-      background-color: red;
-
-    }
+  
     .image{
 
         width:7rem;
