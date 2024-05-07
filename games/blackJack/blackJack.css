@@ -78,7 +78,7 @@ body{
 .button {
 
         
-        /* border: 5px solid black; */
+        border: 2.0px solid black;
         position: relative;
    
         background-color:white;
@@ -88,6 +88,7 @@ body{
         /* border-radius:10px;  */
         
         margin: auto;
+        margin-top: 1rem;
       
         min-height:10px; 
         min-width: 10px;
