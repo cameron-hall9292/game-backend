@@ -11,6 +11,7 @@
     <button id="fire" class="button">START</button>
     <button id="right" class="button">RIGHT</button>
     <button id="pause" class="button">PAUSE</button>
+    <button id="audio" class="button">AUDIO</button>
 
 <style>
 
@@ -59,6 +60,16 @@ position: absolute;
 
 left: 85%;
 top: 95%;
+transform: translate(-50%, -50%);
+
+}
+
+#audio{
+
+position: absolute;
+
+left: 85%;
+top: 15%;
 transform: translate(-50%, -50%);
 
 }
@@ -215,6 +226,7 @@ let fireButton = document.getElementById("fire");
 let leftButton = document.getElementById("left");
 let rightButton = document.getElementById("right");
 let pauseButton = document.getElementById("pause");
+let audioButton = document.getElementById("audio");
 
 //create variables for levels
 
@@ -2620,6 +2632,15 @@ pauseScreen();
 }
   });
 
+
+
+//get audio to play on mobile by starting with a button touch
+
+audioButton.addEventListener("touchstart", function(){
+  titleSong.play();
+
+
+})
 
 
 
