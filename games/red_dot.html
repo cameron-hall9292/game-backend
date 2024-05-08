@@ -1,27 +1,113 @@
 <html>
-  <head></head>
+  <head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
 
   <body>
 <canvas id="canvas1" width="600" height="600"></canvas>
-    <div id="space_invaders"></div>
+    <div id="red-dot"></div>
+    <button id="left" class="button">LEFT</button>
+    <button id="fire" class="button">START</button>
+    <button id="right" class="button">RIGHT</button>
+    <button id="pause" class="button">PAUSE</button>
 
 <style>
+
+
+
+
+.button{
+  top: 85%;
+  display: none;
+}
+
+
+
+#left{
+
+  position: absolute;
+
+	left: 35%;
+	transform: translate(-50%, -50%);
+
+}
+
+#fire{
+
+position: absolute;
+
+left: 50%;
+top: 90%;
+transform: translate(-50%, -50%);
+
+}
+
+
+#right{
+
+position: absolute;
+
+left: 65%;
+transform: translate(-50%, -50%);
+
+}
+
+#pause{
+
+position: absolute;
+
+left: 85%;
+top: 95%;
+transform: translate(-50%, -50%);
+
+}
+
+
 
 
 body {
 /* background:#023020; */
 
-background: black;
+background: #191970;
+
+/* border: 5px solid red; */
+
+
+
+
 }
 
 #canvas1 {
 	
 	border:10px solid white;
 	position: absolute;
-	top: 50%;
+	top: 40%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+  background: black;
+
+ 
+  
+
+  
+ 
 }
+
+@media screen and (max-width: 1200px){
+  #canvas1 {
+    border:5px solid white;
+    width:80vw;
+    height:65vh;
+  }
+
+  .button{
+    display:flex;
+  }
+}
+
+
+
 
 </style>
 
@@ -125,44 +211,39 @@ let shells = totalEnemies * 50;
 
 let buildingCollisionCounter = 0;
 
+let fireButton = document.getElementById("fire");
+let leftButton = document.getElementById("left");
+let rightButton = document.getElementById("right");
+let pauseButton = document.getElementById("pause");
+
 //create variables for levels
 
 let level = 1;
 
+//create variables for sound effects
 
-//title screen heading
+// let bombExplosion = new Audio('fire 6.mp3');
 
-let startScreenText = 'THE RED DOT';
+// let allyExplodeSound = new Audio('fire 6.mp3');
+
+let bombExplosion = new Audio('http://localhost:5500/redDotsounds/boom1.wav');
 
 
-
-//urls to access sound variables
-
-let localUrl = 'http://localhost:5500/';
-
-let herokuUrl = 'https://game-site-backend-8b940b050080.herokuapp.com/';
-
-let soundFolder = "redDotsounds/";
-
-let soundUrl = herokuUrl + soundFolder;
-
-//sound variables
-
-let bombExplosion = new Audio(soundUrl + 'boom1.wav');
-
-let allyExplodeSound = new Audio(soundUrl + 'boom1.wav');
+let allyExplodeSound = new Audio('http://localhost:5500/redDotsounds/boom1.wav');
 
 //let gameOverSound = new Audio('Game Over.mp3');
 
-let gameOverSound = new Audio(soundUrl + 'boom5.wav');
+let gameOverSound = new Audio('http://localhost:5500/redDotsounds/boom5.wav');
 
-let titleSong = new Audio(soundUrl + 'titleSong.mp3');
+let titleSong = new Audio('http://localhost:5500/redDotsounds/titleSong.mp3');
 
-let boomOne = new Audio(soundUrl + 'boom3.wav');
+let startScreenText = 'THE RED DOT';
 
-let robot = new Audio(soundUrl + 'robot.wav');
+let boomOne = new Audio('http://localhost:5500/redDotsounds/boom3.wav');
 
-let buildingDown = new Audio(soundUrl + 'boom5.wav');
+let robot = new Audio('http://localhost:5500/redDotsounds/robot.wav');
+
+let buildingDown = new Audio('http://localhost:5500/redDotsounds/boom5.wav');
 
 
 
@@ -402,7 +483,7 @@ enemiesArr.forEach(enemy => {
 const playerFunc = () => {
 
     //draw player
-    ctx.fillStyle = 'white'
+    ctx.fillStyle = 'black'
     
     triangle =  
     ctx.beginPath();
@@ -1089,9 +1170,17 @@ if (gameIsOver == false){return}
 	
            location.reload();
 
-
-}
+            }
         });
+
+        fireButton.addEventListener("pointerup", function(e){
+
+            
+
+            location.reload();
+
+              
+            });
       //}
     //}
 //     else if (winCondition == true){
@@ -2372,7 +2461,179 @@ console.log('s key pressed');
 
 });
 
+
+
+
+//add event listeners for mobile buttons
+
+
+
+fireButton.addEventListener("click", function(){
+
+
+
+  if (gameStarted == false){
+
+    fireButton.textContent = "FIRE";
+
+    titleSong.pause();
+
+    setIntervalFunc = setInterval(intervalFunc,20);
+
+    //increaseGameDiffInt = setInterval(increaseDifficulty,5000);
+
+    gameStarted = true;
+
+
+    }
+   //check if game is over and if it is, end the interval
+
+function checkIfGameOver() {
+
+if (gameIsOver == true){
+clearInterval(setIntervalFunc);
+//clearInterval(increaseGameDiffInt)
+}
+
+
+
+
+
+let checkGameOver = setInterval(checkIfGameOver,20);
+
+}
+
 });
+
+
+
+
+//allow buttons to aim left and right
+
+leftButton.addEventListener("pointerdown", function(){
+
+
+
+  console.log("left button clicked");
+
+
+
+			
+			
+			if (leftArrowState == false) return;
+			else{
+			playerIntervalLeft();
+			
+			leftArrowState = false;
+			
+			
+		
+			}
+           
+    });
+
+
+ //   allow buttons to aim left and right
+
+leftButton.addEventListener("pointerup", function(){
+
+console.log("left button released");
+
+    
+      playerIntervalLeft();
+		 
+		 leftArrowState = true;
+         
+  });
+
+
+
+
+  rightButton.addEventListener("pointerdown", function(){
+
+
+
+console.log("right button clicked");
+
+
+
+    
+    
+    if (rightArrowState == false) return;
+    else{
+    playerIntervalRight();
+    
+    rightArrowState = false;
+    
+    
+  
+    }
+         
+  });
+
+
+//   allow buttons to aim left and right
+
+rightButton.addEventListener("pointerup", function(){
+
+console.log("right button released");
+
+  
+    playerIntervalRight();
+   
+   rightArrowState = true;
+       
+});
+
+	
+
+
+
+fireButton.addEventListener("pointerup", function(){
+
+
+  if (canControlPlayer == true){
+    if (shells > 0){
+  
+  
+  //boomOne.play();
+  shells -= 1;
+  changeBulletSpeed(playerBulletSpeed);
+  playerBulletCopies();
+    }
+  }
+})
+
+
+
+
+pauseButton.addEventListener("pointerup", function(){
+
+
+
+  if (winCondition == false){
+    if(canPause == true){
+
+pauseScreen();
+    
+  }
+}
+  });
+
+
+
+
+
+
+
+
+});
+
+
+
+
+
+
 
 
 
