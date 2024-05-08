@@ -445,32 +445,72 @@ function startScreen() {
 }
 
 
+function gameOverScreen() {
+
+
+ctx.fillStyle = 'white';
+ctx.font = "50px Arial";
+ctx.fillText('GAMEOVER', CANVASWIDTH * 0.22, CANVASHEIGHT * 0.55);
+
+
+
+}
+
+function reloadPage(){
+
+  window.location.reload();
+}
+
+
+
 
 function setAllIntervals(){
+
+
+if (!gameOn){
 
 let snakeDraw = setInterval(drawSnake,5);
 
 
 
-let bodyMove = setInterval(moveSnakeBody,100);
+ bodyMove = setInterval(moveSnakeBody,100);
 
-let headMove = setInterval(moveSnakeHead,20);
+ headMove = setInterval(moveSnakeHead,20);
 
-let clearTheCanvas = setInterval(clearCanvas,100);
+ clearTheCanvas = setInterval(clearCanvas,100);
 
-let trackElement = setInterval(trackFirstElement,1000);
+ trackElement = setInterval(trackFirstElement,1000);
 
-let collisContain = setInterval(collisionFuncContainer,100);
+ collisContain = setInterval(collisionFuncContainer,100);
 
-let drawTheSnakeFood = setInterval(drawSnakeFood,5);
+ drawTheSnakeFood = setInterval(drawSnakeFood,5);
 
-let checkBoundries = setInterval(boundsCheck,100);
+ checkBoundries = setInterval(boundsCheck,100);
 
-let scoreDraw = setInterval(drawScore,2000);
+ scoreDraw = setInterval(drawScore,2000);
 
-let drawSeparator = setInterval(borderLine,20);
+ drawSeparator = setInterval(borderLine,20);
 
 gameOn = true;
+
+}
+
+else if (gameOn) {
+  clearInterval(snakeDraw);
+  clearInterval(bodyMove);
+  clearInterval(headMove);
+  clearInterval(clearTheCanvas);
+  clearInterval(trackElement);
+  clearInterval(collisContain);
+  clearInterval(drawTheSnakeFood);
+  clearInterval(checkBoundries);
+  clearInterval(scoreDraw);
+  clearInterval(drawSeparator);
+  console.log("game intervals cleared");
+  gameOn = false;
+  gameOverScreen();
+
+}
 
 //drawScore();
 
@@ -484,9 +524,15 @@ gameOn = true;
 
 function gameOver(){
 
-  console.log('gameOver');
 
-location.reload();
+  
+  setAllIntervals();
+
+  setTimeout(reloadPage,2000);
+
+  // console.log('gameOver');
+
+  // location.reload();
 
 
 
