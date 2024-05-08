@@ -1,9 +1,17 @@
 <html>
-  <head></head>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  </head>
 
   <body>
 <canvas id="canvas1" width="600" height="600"></canvas>
-    <div id="space_invaders"></div>
+    <div id="snake-clone"></div>
+    <button id="left" class="button">LEFT</button>
+    <button id="right" class="button">RIGHT</button>
+    <button id="up" class="button">UP</button>
+    <button id="down" class="button">DOWN</button>
+    <button id="start" class="button">START</button>
 
 <style>
 
@@ -11,18 +19,97 @@
 body {
 /* background:#023020; */
 
-background: black;
+background: #191970;
+
+/* border: 5px solid red; */
+
+
+
+
 }
 
 #canvas1 {
 	
 	border:10px solid white;
 	position: absolute;
-	top: 50%;
+	top: 40%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+  background: black;
+
+ 
+  
+
+  
+ 
 }
 
+.button{
+  top: 85%;
+  display: inline-block;
+}
+
+#start{
+
+position: absolute;
+
+left: 50%;
+top: 65%;
+transform: translate(-50%, -50%);
+
+
+}
+
+
+
+#left{
+
+  position: absolute;
+
+	left: 35%;
+	transform: translate(-50%, -50%);
+
+}
+
+
+#right{
+
+position: absolute;
+
+left: 65%;
+transform: translate(-50%, -50%);
+
+}
+
+#up{
+
+position: absolute;
+
+left: 50%;
+top: 80%;
+transform: translate(-50%, -50%);
+
+}
+
+
+
+#down{
+
+position: absolute;
+
+left: 50%;
+top: 90%;
+transform: translate(-50%, -50%);
+
+}
+
+@media screen and (max-width: 1200px){
+  #canvas1 {
+    border:5px solid white;
+    width:80vw;
+    height:55vh;
+  }
+}
 </style>
 
     <script>
@@ -490,15 +577,79 @@ setAllIntervals();
 });
 
 
+
+//add button press events to start and play game on mobile devices
+
+const startButton = document.getElementById("start");
+const leftButton = document.getElementById("left");
+const rightButton = document.getElementById("right");
+const upButton = document.getElementById("up");
+const downButton = document.getElementById("down");
+
+startButton.addEventListener("pointerup", (e) => {
+
+  e.preventDefault();
+
+  if (gameOn == false){
+
+    setAllIntervals();
+
+    startButton.style.display = "none";
+  }
+  console.log("start button pressed");
+
+});
+
+leftButton.addEventListener("pointerup", (e) => {
+  e.preventDefault();
+    
+  if (moveLeftRight == 0) {
+        moveUpDown = 0;
+        moveLeftRight = -snakeSpeed;
+       
+      } 
+
+});
+
+
+rightButton.addEventListener("pointerup", (e) => {
+
+
+        if (moveLeftRight == 0){
+        moveUpDown = 0;
+        moveLeftRight = snakeSpeed;
+      
+        }
+
+
+});
+
+upButton.addEventListener("pointerup", (e) => {
+  e.preventDefault();
+  if (moveUpDown == 0){
+      moveLeftRight = 0;
+      moveUpDown = -snakeSpeed;    
+      }
+
+})
+
+downButton.addEventListener("pointerup", (e) => {
+
+  if (moveUpDown == 0){
+      moveLeftRight = 0;
+      moveUpDown = snakeSpeed;
+      }
+
+});
+
+
+
+
+
+
 //start and end the game when conditions are met
 
 startScreen();
-
-
-
-
-
-
 
 
 
