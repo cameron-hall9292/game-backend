@@ -1,5 +1,7 @@
 <html>
-  <head></head>
+  <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
 
   <body>
 <canvas id="canvas1" width="1000" height="500"></canvas>
@@ -9,9 +11,7 @@
 
 
 body {
-	
 background:#023020;
-
 }
 
 #canvas1 {
@@ -34,6 +34,12 @@ background:#023020;
 
 //GLOBAL VARIABLES
 
+var movePlayerUp;
+
+var movePlayerDown
+
+var stopId;
+
 let XCOR = 20;
 
 let YCOR = 20;
@@ -46,23 +52,19 @@ const CANVAS_WIDTH = 1000;
 
 const CANVAS_HEIGHT = 500;
 
-//create global interval for all interval functions
-
-const funcInterval = 15;
-
 
 //make ball serve randomly from x and y axis;
 
 let DIRECT_X = Math.floor(Math.random() * 20 - 10);
 //PREVENT DIRECT_X FROM BEING ZERO
-if (DIRECT_X >= -4 && DIRECT_X <= 4) DIRECT_X = 5;
+if (DIRECT_X >= -4 && DIRECT_X <= 4) DIRECT_X = 2;
 
 //let DIRECT_Y = 0.34;
 
 
 let DIRECT_Y = Math.floor(Math.random() * 12 - 6);
 //PREVENT DIRECT_Y FROM BEING ZERO
-if (DIRECT_Y >= -4 && DIRECT_Y <= 4) DIRECT_Y = 5;
+if (DIRECT_Y >= -4 && DIRECT_Y <= 4) DIRECT_Y = 2;
 
 
 let absoluteDIRECT_Y;
@@ -132,9 +134,6 @@ let peeep = new Audio(soundUrl + 'peeep.ogg');
 let peep = new Audio(soundUrl + 'peep.ogg');
 
 let plop = new Audio(soundUrl + 'plop.ogg');
-
-let x = 0;
-
 
 let count = 0;
 
@@ -207,12 +206,6 @@ const drawMovingRect = (x,y,w,h) => {
 	
 	ctx.fillRect(x,y,w,h);
 	ctx.fillStyle = 'white';
-
-	// const width = 10;
-
-	// ctx.beginPath();
-	// ctx.arc(x, y, width, 0, 2 * Math.PI);
-	// ctx.fill();
 
   }
   
@@ -383,7 +376,14 @@ collisionDetection(playerRect,movingRect);
 collisionDetection(computerRect,movingRect);
 
 drawScore();
+
+stopId = requestAnimationFrame(moveRect);
 }
+
+
+
+
+
 
 
 //this is a bad variable name; this just draws the paddles; it does not move them;
@@ -491,6 +491,8 @@ const moveExp = () => {
 //inbounds();
 playerRect.PADDLEY -= 10;
 
+movePlayerUp = requestAnimationFrame(moveExp);
+
 
 }
 
@@ -498,10 +500,12 @@ const playerInterval = () => {
 
 	if (upArrowState == true && downArrowState == true) {
 	
-	 newInt = setInterval(moveExp,funcInterval)
+	 //newInt = setInterval(moveExp,20)
+	 requestAnimationFrame(moveExp);
 	}
 	else {
-	clearInterval(newInt)
+	cancelAnimationFrame(movePlayerUp);
+	//clearInterval(newInt)
 	}
  
 }
@@ -512,6 +516,8 @@ const playerInterval = () => {
 const moveExpdown = () => {
 playerRect.PADDLEY += 10;
 
+movePlayerDown = requestAnimationFrame(moveExpdown)
+
 
 }
 
@@ -519,10 +525,12 @@ const playerIntervaldown = () => {
 
 	if (downArrowState == true && upArrowState == true) {
 	
-	 newInt = setInterval(moveExpdown,funcInterval)
+	// newInt = setInterval(moveExpdown,20)
+	requestAnimationFrame(moveExpdown)
 	}
 	else {
-	clearInterval(newInt)
+	//clearInterval(newInt)
+	cancelAnimationFrame(movePlayerDown)
 	}
  
 }
@@ -600,7 +608,7 @@ switch (e.keyCode) {
  case 40:
  
  
-			playerInterval();
+ 	playerIntervaldown();
 		 
 		 downArrowState = true;
  
@@ -701,7 +709,8 @@ if (DIRECT_Y >= -4 && DIRECT_Y <= 4) DIRECT_Y = 5;
 
 const checkGameStatus = () => {
 if (gameStatus == false){
-clearInterval(moveRectInt);
+//clearInterval(moveRectInt);
+cancelAnimationFrame(stopId);
 
 
 gameOver();
@@ -754,9 +763,6 @@ ctx.fillStyle = 'white';
 	ctx.fillText('PRESS ENTER TO RESUME', 350, 250);
 
 	}
-
-
-
 	
 
 //create functions to start and end game
@@ -767,13 +773,17 @@ const startGame = () => {
 if (gameOn == false) {
 
 
- moveRectInt = setInterval(moveRect,funcInterval);
+ //moveRectInt = setInterval(moveRect,200);
 
- checkGameStat = setInterval(checkGameStatus,funcInterval);
+ requestAnimationFrame(moveRect);
+
+ checkGameStat = setInterval(checkGameStatus,20);
 }
 else {
 
-clearInterval(moveRectInt);
+//clearInterval(moveRectInt);
+
+cancelAnimationFrame(stopId);
 
 clearInterval(checkGameStat);
 
@@ -967,9 +977,9 @@ clearInterval(checkGameStat);
 
 startScreen();
 
-setInterval(inbounds,funcInterval);
+setInterval(inbounds,20);
 
-setInterval(inboundsComp,funcInterval);
+setInterval(inboundsComp,20);
 
 	});
 
