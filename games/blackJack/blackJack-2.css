@@ -1,0 +1,170 @@
+
+html{
+    font-size:62.5%;
+}
+
+
+
+body{
+	background-color:#35654d ;
+	
+    width:95%;
+
+    color:white;
+    font-family: 'Crete Round';
+    border: 5px solid yellow;
+    font-size: 2rem;
+
+
+
+}
+
+.main{
+    border: 5px solid black;
+   
+    
+   
+}
+
+.dealerCards{
+   
+
+   
+
+    border: 5px solid blue;
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    
+
+}
+
+.playerCards{
+    
+   
+    border: 5px solid green;
+
+    
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    
+    
+
+}
+
+.image{
+    border: 5px solid white;
+  
+    /* display:none; */
+
+}
+
+
+
+.buttons{
+    margin:auto;
+    width:95%;
+    border: 5px solid red;
+    display:flex;
+  
+}
+
+.button {
+
+        
+        border: 5px solid black;
+        position: relative;
+   
+        background-color:white;
+
+        color: BLACK;
+     
+        /* border-radius:10px;  */
+        
+        margin: auto;
+      
+        min-height:10px; 
+        min-width: 10px;
+     
+      
+      
+     
+        width: 75px;
+        height: 50px;
+        font-family: 'Crete Round'
+    
+  }
+
+
+.data{
+    font-family: 'Crete Round';
+   
+    
+}
+
+#betLabel{
+    margin-left:100px;
+}
+
+#dealerScore{
+    margin-left: 100px;
+
+}
+
+
+#playerScore{
+    margin-left: 100px;
+ 
+}
+
+#winner{
+    display:block;
+    text-align: center;
+    margin: 1rem;
+}
+
+@media screen and (max-width: 480px) {
+    body {
+      background-color: red;
+
+    }
+    .image{
+
+        width:7rem;
+    }
+
+    .button {
+        width: 10rem;
+    }
+  }
+
+  @media screen and (min-width: 600px) {
+    .image {
+      width: 12rem;
+    }
+
+    .button {
+        width: 12rem;
+    }
+  }
+  
+  @media screen and (min-height: 800px) {
+    .image {
+      width: 10rem;
+    }
+
+    .button {
+        width: 10rem;
+    }
+
+    body{
+        font-size: 2.5rem;
+    }
+  }
+  
