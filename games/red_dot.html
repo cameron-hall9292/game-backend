@@ -218,6 +218,7 @@ let canControlPlayer = true;
 
 let shells = totalEnemies * 50;
 
+
 let buildingCollisionCounter = 0;
 
 let fireButton = document.getElementById("fire");
@@ -1198,8 +1199,10 @@ clearStartText = setInterval(flashText,1000);
 
 
 
-    fireButton.addEventListener("pointerup", function(){
+    fireButton.addEventListener("pointerup", (e) => {
 
+
+      e.preventDefault();
 
       if (gameIsOver == true){
 
@@ -2408,9 +2411,9 @@ console.log('s key pressed');
 
 
 
-fireButton.addEventListener("pointerup", function(){
+fireButton.addEventListener("pointerup", (e) => {
 
-
+  e.preventDefault();
 
 if (gameStarted == false){
 
@@ -2437,10 +2440,10 @@ if (gameStarted == false){
 
 //allow buttons to aim left and right
 
-leftButton.addEventListener("pointerdown", function(){
+leftButton.addEventListener("pointerdown", (e) => {
 
 
-
+  e.preventDefault();
 console.log(`leftArrowState: ${leftArrowState}, rightArrowState: ${rightArrowState}`);
 
     if (leftArrowState == true) stopLeft = requestAnimationFrame(playerIntervalLeft);
@@ -2461,9 +2464,9 @@ leftButton.addEventListener("pointerup", function(){
 
 
 
-rightButton.addEventListener("pointerdown", function(){
+rightButton.addEventListener("pointerdown", (e) => {
 
-
+  e.preventDefault();
 
   console.log(`leftArrowState: ${leftArrowState}, rightArrowState: ${rightArrowState}`);
 
@@ -2478,8 +2481,9 @@ rightButton.addEventListener("pointerdown", function(){
 
 //   allow buttons to aim left and right
 
-rightButton.addEventListener("pointerup", function(){
+rightButton.addEventListener("pointerup", (e) => {
 
+  e.preventDefault();
  
  rightArrowState = true;
      
@@ -2489,9 +2493,9 @@ rightButton.addEventListener("pointerup", function(){
 
 
 
-fireButton.addEventListener("pointerup", function(){
+fireButton.addEventListener("pointerup", (e) => {
 
-
+  e.preventDefault();
 if (canControlPlayer == true){
   if (shells > 0){
 
@@ -2507,9 +2511,9 @@ playerBulletCopies();
 
 
 
-pauseButton.addEventListener("pointerup", function(){
+pauseButton.addEventListener("pointerup", (e) => {
 
-
+  e.preventDefault();
 
 if (winCondition == false){
   if(canPause == true){
