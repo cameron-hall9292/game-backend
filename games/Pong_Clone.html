@@ -6,8 +6,30 @@
   <body>
 <canvas id="canvas1" width="1000" height="500"></canvas>
     <div id="game"></div>
+	
+	<div id ="buttonContainer">
+		<button id="start" class="button">start</button>
+	
+		<button id="pause" class="button">pause</button>
+
+		</div>
+
+	<div id="arrowButtons" class="button">
+
+		<button id="up" class="button">up</button>
+		<button id="down" class="button">down</button>
+	
+		</div>
+		
 
 <style>
+
+#buttonContainer{
+	border: 2px solid white;
+	display: flex;
+	justify-content: center;
+	margin-top: 80vh;
+}
 
 
 body {
@@ -22,6 +44,34 @@ background:#023020;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
+
+
+@media screen and (max-width: 1200px){
+  #canvas1 {
+    border:5px solid white;
+    width:90vw;
+    height:40vh;
+	font-size: 2rem;
+	top: 25vh;
+  }
+  #buttonContainer{
+	margin-top: 50vh;
+	height: 5vh;
+  }
+  #arrowButtons{
+	border: 2px solid white;
+	display:flex;
+	flex-direction: column;
+	margin-top: 10vh;
+  }
+  #up{
+	height:10vh;
+  }
+  #down{
+	height:10vh;
+  }
+}
+
 
 </style>
 
@@ -51,6 +101,11 @@ let SHEIGHT = 20;
 const CANVAS_WIDTH = 1000;
 
 const CANVAS_HEIGHT = 500;
+
+let startButton = document.getElementById("start");
+let upButton = document.getElementById("up");
+let downButton = document.getElementById("down");
+let pauseButton = document.getElementById("pause");
 
 
 //make ball serve randomly from x and y axis;
@@ -498,16 +553,21 @@ movePlayerUp = requestAnimationFrame(moveExp);
 
 const playerInterval = () => {
 
-	if (upArrowState == true && downArrowState == true) {
+	if (upArrowState == true || playerRect.PADDLEY < 15) {return}
+
 	
-	 //newInt = setInterval(moveExp,20)
-	 requestAnimationFrame(moveExp);
-	}
+
+
 	else {
-	cancelAnimationFrame(movePlayerUp);
-	//clearInterval(newInt)
+
+	console.log("moving up");
+	
+	playerRect.PADDLEY -= 10;
+
+	requestAnimationFrame(playerInterval);
+
 	}
- 
+	
 }
 
 
@@ -523,14 +583,19 @@ movePlayerDown = requestAnimationFrame(moveExpdown)
 
 const playerIntervaldown = () => {
 
-	if (downArrowState == true && upArrowState == true) {
+	if (downArrowState == true || playerRect.PADDLEY > 435) {return}
+
 	
-	// newInt = setInterval(moveExpdown,20)
-	requestAnimationFrame(moveExpdown)
-	}
+
+
 	else {
-	//clearInterval(newInt)
-	cancelAnimationFrame(movePlayerDown)
+
+	console.log("moving down");
+	
+	playerRect.PADDLEY += 10;
+
+	requestAnimationFrame(playerIntervaldown);
+
 	}
  
 }
@@ -543,83 +608,62 @@ const playerIntervaldown = () => {
 //ADD GAME CONTROLS TO MOVE PADDLE
 
 
+upButton.addEventListener("pointerdown", (e) => {
+	e.preventDefault();
+	
+	if (upArrowState == true) movePlayerUp = requestAnimationFrame(playerInterval);
+	upArrowState = false;
+	
+})
+
+upButton.addEventListener("pointerup", (e) => {
+	e.preventDefault();
+	upArrowState = true;
+	
+})
+
+
+downButton.addEventListener("pointerdown", (e) => {
+	e.preventDefault();
+	if (downArrowState == true) movePlayerDown = requestAnimationFrame(playerIntervaldown);
+	downArrowState = false;
+	
+	
+})
+
+downButton.addEventListener("pointerup", (e) => {
+	e.preventDefault();
+	downArrowState = true;
+	
+})
+
+
+
 window.addEventListener("keydown", function(e){
 
-switch (e.keyCode) {
-        case 37:
-           // alert('left');
-		   
-		 
-		  
-            break;
-        case 38:
-            //alert('up');
-			
-			if (upArrowState == false){
-			break;}
-			else{
-			
-			playerInterval();
-			
-			upArrowState = false;
-		
-			
-			
-		 }
-            break;	
-        case 40:
-            //alert('down')
-			
-			if (downArrowState == false){
-			break;
-			}
-			else{
-			playerIntervaldown();
-			
-			downArrowState = false;
-			
-			
-		
-			}
-            break;
-    }
-	
+	console.log(e.key);
+
+	e.preventDefault();
+
+	if (e.key == "ArrowUp"){
+		if (upArrowState == true) movePlayerUp = requestAnimationFrame(playerInterval);
+		upArrowState = false;
+	}
+	else if (e.key == "ArrowDown") {
+		if (downArrowState == true) movePlayerDown = requestAnimationFrame(playerIntervaldown);
+		downArrowState = false;
+
+	}			
 });
 
 
 window.addEventListener("keyup", function(e){
-
-switch (e.keyCode) {
-        case 37:
-           // alert('left');
-		   
-		 
-		  
-            break;
-        case 38:
-            //alert('up');
-	
-		 playerInterval();
-		 
-		 upArrowState = true;
-		 
-		break;
-
- case 40:
- 
- 
- 	playerIntervaldown();
-		 
-		 downArrowState = true;
- 
- 
- 
-            //alert('down');
-	
-            break;
-    }
-
+	e.preventDefault();
+	if (e.key == "ArrowUp") upArrowState = true;
+	else if (e.key == "ArrowDown") downArrowState = true;
 });
+
+
 
 function drawScore(){
 	
@@ -754,13 +798,13 @@ ctx.fillStyle = 'white';
 	}
 	
 	
-	const pauseScreen = () => {
+	const pauseScreen = (label) => {
 
 
 
 ctx.fillStyle = 'white';
 	ctx.font = "25px Arial";
-	ctx.fillText('PRESS ENTER TO RESUME', 350, 250);
+	ctx.fillText(label, 350, 250);
 
 	}
 	
@@ -789,6 +833,30 @@ clearInterval(checkGameStat);
 
 }
 }
+
+
+
+
+
+	startButton.addEventListener("pointerup", (e) => {
+		e.preventDefault();
+		if (gameOn == false) {
+			startGame();
+			gameOn = true;
+		}
+	});
+
+
+	pauseButton.addEventListener("pointerup", (e) => {
+		e.preventDefault();
+
+		if (gameOn == true){
+		pauseScreen("PRESS START TO RESUME GAME");	
+		startGame();
+		gameOn = false;
+		}
+
+	})
 
 	
 	window.addEventListener("keyup", function(e){
@@ -819,7 +887,7 @@ clearInterval(checkGameStat);
 	
 	if ((e.key == 'p' || e.key == 'P')&& gameOn == true){
 	
-		pauseScreen();
+		pauseScreen("PRESS ENTER TO RESUME GAME");
 		
 		startGame();
 		
