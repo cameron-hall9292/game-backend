@@ -11,7 +11,7 @@
     <button id="fire" class="button">START</button>
     <button id="right" class="button">RIGHT</button>
     <button id="pause" class="button">PAUSE</button>
-    <button id="audio" class="button">AUDIO</button>
+   
 
 <style>
 
@@ -64,16 +64,6 @@ transform: translate(-50%, -50%);
 
 }
 
-#audio{
-
-position: absolute;
-
-left: 15%;
-top: 95%;
-transform: translate(-50%, -50%);
-
-}
-
 
 
 
@@ -109,7 +99,7 @@ background: #191970;
   #canvas1 {
     border:5px solid white;
     width:80vw;
-    height:65vh;
+    height:50vh;
   }
 
   .button{
@@ -142,9 +132,15 @@ const canvasHeight = 600;
 
 var stopId;
 
+var stopRight;
+
+var stopLeft;
+
+var stopLeft;
+
 let numEnemies = 10;
 
-let numAllies = 2;
+let numAllies = 3;
 
 let numBuildings = 0;
 
@@ -216,7 +212,7 @@ let remainingEnemies = 0;
 
 let gameStarted = false;
 
-let canPause = true;
+let canPause = false;
 
 let canControlPlayer = true;
 
@@ -228,7 +224,7 @@ let fireButton = document.getElementById("fire");
 let leftButton = document.getElementById("left");
 let rightButton = document.getElementById("right");
 let pauseButton = document.getElementById("pause");
-let audioButton = document.getElementById("audio");
+
 
 //create variables for levels
 
@@ -1097,22 +1093,22 @@ redDot.xcor = placeDotX;
 
 
 
-console.log(`playerBulletXcor ${playerBulletXcor}`);
+// console.log(`playerBulletXcor ${playerBulletXcor}`);
 
-console.log(`directbullet ${directBullet}`);
+// console.log(`directbullet ${directBullet}`);
 
-console.log(`dotHeight ${dotHeight}`);
+// console.log(`dotHeight ${dotHeight}`);
 
-console.log(`numBulletMovements ${numBulletMovements}`);
+// console.log(`numBulletMovements ${numBulletMovements}`);
 
-console.log(`dotXtraject ${dotXtraject}`);
+// console.log(`dotXtraject ${dotXtraject}`);
 
-console.log(`placeDotX ${placeDotX}`);
+// console.log(`placeDotX ${placeDotX}`);
 
 
-console.log(`redDot.xcor ${redDot.xcor}`);
+// console.log(`redDot.xcor ${redDot.xcor}`);
 
-console.log(`redDot.ycor ${redDot.ycor}`);
+// console.log(`redDot.ycor ${redDot.ycor}`);
 
 
 
@@ -1194,12 +1190,28 @@ clearStartText = setInterval(flashText,1000);
     window.addEventListener("keyup", function(e){
 
       if (e.keyCode == 13){
+        if (gameIsOver == true) location.reload();
 
-       location.reload();
+        }
 
-
-}
     });
+
+
+
+    fireButton.addEventListener("pointerup", function(){
+
+
+      if (gameIsOver == true){
+
+      fireButton.textContent = "START";
+        
+      location.reload();
+      }
+  
+});
+
+
+
   //}
 //}
 //     else if (winCondition == true){
@@ -1303,6 +1315,8 @@ else if(gameStatusOn == true){
 //clearInterval(setIntervalFunc);
 
 cancelAnimationFrame(stopId);
+
+
 
 ctx.fillStyle = 'white';
 ctx.font = "50px Arial";
@@ -2049,6 +2063,8 @@ window.addEventListener("keyup", function(e){
 
     gameStarted = true;
 
+    canPause = true;
+
   
     }
      //check if game is over and if it is, end the interval
@@ -2086,68 +2102,21 @@ drawStartScreen();
 
 const playerIntervalRight = () => {
 
-//move player paddle right
-
-const moveExp = () => {
-//move player right
-// if (player.xcor >= gate.xcor + gate.width - player.width * 0.5){return}
-// else{
-// player.xcor += 10;
-// }
-
 //rotate player to the right
 
-if (playerBulletXcor > 15 ){return}
+if (playerBulletXcor > 15 || rightArrowState == true ){return}
 else{
-playerBulletXcor += 1;
+playerBulletXcor += 0.50;
 
-
+console.log("moving right");
 
 
 calcTraject();
 
-
-
-//redDot.xcor += 15;
-
-
-
-
-// redDot.xcor += playerBulletXcor * 2;
-
-
-
-
-// if (redDot.xcor > 300) {
-// redDot.ycor += 100 //= 300 + Math.abs(playerBulletXcor);
-// }
-// else if (redDot.xcor < 300) {
-//   redDot.ycor -= 100 //= 300 + Math.abs(playerBulletXcor);
-// }
-// else {
-//   redDot.ycor = 300;
-// }
-
-
-
-console.log(`playerBulletXcor ${playerBulletXcor}`);
-
-//console.log(`redDot.ycor ${redDot.ycor}`);
+requestAnimationFrame(playerIntervalRight);
 
 }
 
-
-
-}
-
-
-if (rightArrowState == true && leftArrowState == true && canControlPlayer == true) {
-
-newInt = setInterval(moveExp,20)
-}
-else {
-clearInterval(newInt)
-}
 
 }
 
@@ -2156,71 +2125,25 @@ clearInterval(newInt)
 
 const playerIntervalLeft = () => {
 
-//move player paddle left
-
-const moveExpdown = () => {
-
-//move player ot the left
-//   if (player.xcor <= gate.xcor + player.width * 0.5){return}
-// else{
-// player.xcor -= 10;
-// }
-
-
 //rotate player to the left
 
-if (playerBulletXcor < -15 ){return}
-else{
-playerBulletXcor -= 1;
+  if (playerBulletXcor < -11 || leftArrowState == true ) {return}
+  else {
 
-//redDot.ycor += 5; 
+    playerBulletXcor -= 0.50;
 
+    console.log("moving left");
 
+    calcTraject();
 
-calcTraject();
-
-
-//redDot.xcor -= 15;
+    requestAnimationFrame(playerIntervalLeft)
 
 
-
-
-
-
-// if (redDot.xcor < 300) {
-//   redDot.ycor += 100  //= 300 + Math.abs(playerBulletXcor);
-// }
-// else if (redDot.xcor > 300) {
-//   redDot.ycor -= 100 // = 300 + Math.abs(playerBulletXcor);
-// }
-// else {
-//   redDot.ycor = 300;
-// }
-
-
-// redDot.xcor += playerBulletXcor;
-
-//  redDot.ycor -= playerBulletXcor;
-
-console.log(`playerBulletXcor ${playerBulletXcor}`);
-
-//console.log(`redDot.ycor ${redDot.ycor}`);
-
-
+  }
 
 }
 
-}
 
-if (leftArrowState == true && rightArrowState == true && canControlPlayer == true) {
-
-newInt = setInterval(moveExpdown,20)
-}
-else {
-clearInterval(newInt)
-}
-
-}
 
 const playerIntervalDown = () => {
 
@@ -2244,6 +2167,11 @@ clearInterval(newInt)
 }
 
 }
+
+
+
+
+
 
 const playerIntervalUp = () => {
 
@@ -2283,33 +2211,20 @@ switch (e.keyCode) {
         //break;
     case 39:
         //alert('up');
-  
-  if (rightArrowState == false){
-  break;}
-  else{
-  
-  playerIntervalRight();
-  
-  rightArrowState = false;
+        console.log(`rightArrowState: ${rightArrowState}`)
+        if (rightArrowState == true) stopRight = requestAnimationFrame(playerIntervalRight);
+    rightArrowState = false;
 
-  
-  
- }
         break;	
     case 37:
         //alert('down')
-  
-  if (leftArrowState == false){
-  break;
-  }
-  else{
-  playerIntervalLeft();
-  
-  leftArrowState = false;
-  
+ console.log(`leftArrowState: ${leftArrowState}`)
+    if (leftArrowState == true) stopLeft = requestAnimationFrame(playerIntervalLeft);
+    leftArrowState = false;
+
   
 
-  }
+  
         break;
 }
 
@@ -2323,41 +2238,14 @@ switch (e.keyCode) {
 
     // case 39:
 
-    // if (downArrowState == false){
-    //   break
-    // }
-    // else{
-    // playerIntervalDown();
-    // downArrowState = false
-    // }
-   
-   // playerBulletXcor < 100 ? playerBulletXcor += 5 : console.log(`playerBulletXcor ${playerBulletXcor}`)
     
-
-    // console.log('up arrow pressed');
-  
-        //break;
-      //case 40:
-      //   case 37:
-
-      // if (upArrowState == false){
-      //   break
-      // }
-      // else {
-      // playerIntervalUp();
-      // upArrowState = false
-      // }
-     
-     // playerBulletXcor > -100 ? playerBulletXcor -= 5 : console.log(`playerBulletXcor ${playerBulletXcor}`)
-
-      // console.log('down arrow pressed');
       //break;
     case 39:
         //alert('up');
 
 
 
- playerIntervalRight();
+ 
  
  rightArrowState = true;
 
@@ -2365,9 +2253,10 @@ break;
 
 case 37:
 
-  playerIntervalLeft();
- 
- leftArrowState = true;
+// cancelAnimationFrame(stopRight);
+
+leftArrowState = true;
+  
 
 
 
@@ -2508,6 +2397,132 @@ console.log('s key pressed');
 //}
 
 });
+
+
+
+
+
+
+
+//add event listeners for mobile buttons
+
+
+
+fireButton.addEventListener("pointerup", function(){
+
+
+
+if (gameStarted == false){
+
+  fireButton.textContent = "FIRE";
+
+  titleSong.pause();
+
+  requestAnimationFrame(intervalFunc);
+
+  //increaseGameDiffInt = setInterval(increaseDifficulty,5000);
+
+  gameStarted = true;
+
+  canPause = true;
+
+
+  }
+});
+
+
+
+
+
+
+//allow buttons to aim left and right
+
+leftButton.addEventListener("pointerdown", function(){
+
+
+
+console.log(`leftArrowState: ${leftArrowState}, rightArrowState: ${rightArrowState}`);
+
+    if (leftArrowState == true) stopLeft = requestAnimationFrame(playerIntervalLeft);
+    leftArrowState = false;
+         
+  });
+
+
+//   allow buttons to aim left and right
+
+leftButton.addEventListener("pointerup", function(){
+  
+   
+   leftArrowState = true;
+       
+});
+
+
+
+
+rightButton.addEventListener("pointerdown", function(){
+
+
+
+  console.log(`leftArrowState: ${leftArrowState}, rightArrowState: ${rightArrowState}`);
+
+
+
+  if (rightArrowState == true) stopRight = requestAnimationFrame(playerIntervalRight);
+    rightArrowState = false;
+
+       
+});
+
+
+//   allow buttons to aim left and right
+
+rightButton.addEventListener("pointerup", function(){
+
+ 
+ rightArrowState = true;
+     
+});
+
+
+
+
+
+fireButton.addEventListener("pointerup", function(){
+
+
+if (canControlPlayer == true){
+  if (shells > 0){
+
+
+//boomOne.play();
+shells -= 1;
+changeBulletSpeed(playerBulletSpeed);
+playerBulletCopies();
+  }
+}
+})
+
+
+
+
+pauseButton.addEventListener("pointerup", function(){
+
+
+
+if (winCondition == false){
+  if(canPause == true){
+
+pauseScreen("PAUSE");
+  
+}
+}
+});
+
+
+
+
 
 });
 
