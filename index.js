@@ -108,7 +108,11 @@ app.get("/redDotsounds/:sound", (req, res) => {
 //render snake_clone game
 
 app.get("/snake", (req, res) => {
-  res.sendFile(__dirname + "/games/snake_clone.html");
+  res.sendFile(__dirname + "/games/snake/snake.html");
+});
+
+app.get("/snakejs", (req, res) => {
+  res.sendFile(__dirname + "/games/snake/snake.js");
 });
 
 
